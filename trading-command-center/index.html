@@ -1,0 +1,804 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trading Command Center — Telegram and Discord control for MetaTrader 5</title>
+<meta name="description" content="An MT5 Expert Advisor that sends every trade to Telegram or Discord, builds performance reports per account and per bot, and lets you manage positions from the chat behind confirmations, a kill-switch and risk limits. Seven languages.">
+<link rel="canonical" href="https://jsgaston.github.io/tools/trading-command-center/">
+<meta name="theme-color" content="#06141F">
+<meta property="og:type" content="product">
+<meta property="og:title" content="Trading Command Center — your MT5 account in a Telegram chat">
+<meta property="og:description" content="Real-time trade alerts, reports per bot and remote position management for MetaTrader 5, with trading switched off until you turn it on.">
+<meta property="og:url" content="https://jsgaston.github.io/tools/trading-command-center/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%2306141F'/><rect x='9' y='7' width='4' height='18' fill='%2345C29A'/><rect x='19' y='11' width='4' height='14' fill='%23E0A92C'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&family=Spectral:ital,wght@0,300;0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --abyss:#06141F; --abyss-2:#0A2130; --sea:#0F2C42; --chart:#E4EAE8; --panel:#F7F9F8;
+  --ink:#0F2C42; --ink-2:#34506A; --muted:#607487;
+  --rule:rgba(15,44,66,.14); --rule-2:rgba(15,44,66,.3);
+  --drule:rgba(214,230,240,.13); --drule-2:rgba(214,230,240,.26);
+  --dtext:#DCE6EC; --dmuted:#8DA4B4;
+  --brass:#E0A92C; --brass-2:#F0BD48;
+  --up:#1E6B57; --down:#BE3A2B; --sig:#45C29A; --sig-down:#E8715F;
+  --maxw:1200px;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;scroll-padding-top:74px}
+body{margin:0;background:var(--chart);color:var(--ink);font:400 17.5px/1.68 Spectral,Georgia,serif;font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4,nav,button,summary,table,.ui{font-family:Archivo,system-ui,sans-serif}
+a{color:inherit;text-underline-offset:3px;text-decoration-thickness:1px}
+:focus-visible{outline:2px solid var(--brass);outline-offset:3px}
+img{max-width:100%;height:auto;display:block}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px}
+.skip{position:absolute;left:-999px;top:0;background:var(--brass);color:#1A1206;padding:8px 14px;font-family:Archivo;z-index:99}
+.skip:focus{left:12px;top:12px}
+code,.mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-size:.9em}
+
+/* nav */
+.top{position:sticky;top:0;z-index:50;background:rgba(6,20,31,.92);backdrop-filter:saturate(140%) blur(10px);-webkit-backdrop-filter:saturate(140%) blur(10px);border-bottom:1px solid var(--drule)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;height:62px;gap:20px}
+.brand{display:flex;align-items:center;gap:11px;text-decoration:none;color:#fff;font:700 16px Archivo;font-stretch:122%;letter-spacing:.09em;white-space:nowrap}
+.brand svg{width:27px;height:18px;display:block}
+.brand .prod{font-stretch:100%;letter-spacing:0;font-weight:500;color:var(--dmuted)}
+.top nav{display:flex;align-items:center;gap:24px;font-size:14.5px}
+.top nav a{text-decoration:none;color:var(--dmuted);font-weight:500;white-space:nowrap}
+.top nav a:hover{color:#fff}
+.top nav a.pill{color:#1A1206;background:var(--brass);padding:8px 18px;font-weight:700}
+.top nav a.pill:hover{background:var(--brass-2)}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:10px;font:700 16px Archivo;text-decoration:none;padding:15px 26px;border:1px solid transparent;cursor:pointer;transition:background .15s,border-color .15s}
+.btn.brass{background:var(--brass);color:#1A1206}
+.btn.brass:hover{background:var(--brass-2)}
+.btn.line{color:#fff;border-color:var(--drule-2)}
+.btn.line:hover{border-color:#fff}
+.btn.ink{background:var(--sea);color:#EEF3F1}
+.btn.ink:hover{background:#17405E}
+.btn.ghost{color:var(--ink);border-color:var(--rule-2)}
+.btn.ghost:hover{border-color:var(--ink)}
+.actions{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+.aside{font:500 13.5px Archivo;color:var(--dmuted)}
+
+/* hero */
+.hero{position:relative;background:var(--abyss);color:var(--dtext);overflow:hidden;isolation:isolate}
+.hero::before{content:"";position:absolute;inset:0;z-index:-1;opacity:.55;
+  background-image:linear-gradient(var(--drule) 1px,transparent 1px),linear-gradient(90deg,var(--drule) 1px,transparent 1px);
+  background-size:64px 64px;background-position:-1px -1px;
+  mask-image:radial-gradient(ellipse 90% 80% at 70% 40%,#000 25%,transparent 75%);
+  -webkit-mask-image:radial-gradient(ellipse 90% 80% at 70% 40%,#000 25%,transparent 75%)}
+.hero > .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:64px;align-items:center;padding-top:92px;padding-bottom:100px}
+.where{font:500 14px Archivo;color:var(--dmuted);margin:0 0 26px;display:flex;align-items:center;gap:10px}
+.where i{display:block;width:26px;height:1px;background:var(--brass);flex:none}
+.hero h1{margin:0 0 28px;color:#fff;font-weight:800;font-stretch:110%;font-size:clamp(42px,5.6vw,80px);line-height:.98;letter-spacing:-.025em}
+.hero h1.long{font-size:clamp(34px,4.1vw,56px);line-height:1.04}
+.lede{font-size:20.5px;line-height:1.55;color:#BCCDD8;max-width:31em;margin:0 0 20px;font-weight:300}
+.lede + .actions,.lede:last-of-type{margin-bottom:38px}
+
+.instrument{background:linear-gradient(180deg,rgba(15,44,66,.72),rgba(10,33,48,.9));border:1px solid var(--drule-2);box-shadow:0 30px 80px -30px rgba(0,0,0,.7)}
+.instrument header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px;border-bottom:1px solid var(--drule)}
+.instrument header b{font:700 15px Archivo;color:#fff;font-stretch:112%;letter-spacing:.02em}
+.instrument header span{font:500 12.5px Archivo;color:var(--dmuted)}
+.badge{font:700 11px Archivo;letter-spacing:.04em;color:#1A1206;background:var(--brass);padding:2px 7px;margin-left:8px;vertical-align:2px}
+.inst-big{padding:22px 20px 0;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.inst-big .num{font:800 54px/1 Archivo;font-stretch:108%;color:#fff;letter-spacing:-.02em}
+.inst-big .lab{font:500 13.5px Archivo;color:var(--dmuted)}
+.inst-chart{height:180px;padding:10px 0 0}
+.inst-chart svg{display:block;width:100%;height:100%}
+.inst-fig{padding:18px 20px 6px}
+.inst-fig svg{display:block;width:100%;height:auto}
+.inst-grid{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--drule);margin:0}
+.inst-grid div{padding:14px 16px 16px;border-right:1px solid var(--drule)}
+.inst-grid div:last-child{border-right:0}
+.inst-grid dt{font:500 12px Archivo;color:var(--dmuted);margin:0 0 3px}
+.inst-grid dd{font:700 20px Archivo;color:#fff;margin:0;white-space:nowrap}
+.inst-foot{padding:12px 20px;border-top:1px solid var(--drule);font:400 12.5px/1.5 Archivo;color:var(--dmuted);margin:0}
+.draw{stroke-dasharray:var(--len);stroke-dashoffset:var(--len);animation:draw 1.8s .25s cubic-bezier(.6,.05,.25,1) forwards}
+.fade{opacity:0;animation:fadein .8s 1.5s forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes fadein{to{opacity:1}}
+
+/* principles strip */
+.principles{background:var(--abyss-2);color:var(--dtext);border-top:1px solid var(--drule)}
+.principles .wrap{display:grid;grid-template-columns:repeat(3,1fr)}
+.principles div{padding:34px 34px 36px 0;margin-right:34px;border-right:1px solid var(--drule)}
+.principles div:last-child{border-right:0;margin-right:0}
+.principles h3{margin:0 0 6px;font-size:18px;font-weight:700;color:#fff;font-stretch:106%}
+.principles p{margin:0;font-size:15.5px;color:var(--dmuted);line-height:1.6}
+
+/* sections */
+section{padding:108px 0}
+section.panel{background:var(--panel);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+section.dark{background:var(--abyss);color:var(--dtext)}
+.head{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:end;margin-bottom:54px}
+.head.solo{grid-template-columns:1fr;max-width:52em}
+h2{margin:0;font-size:clamp(34px,4.3vw,58px);line-height:1.02;font-weight:800;font-stretch:108%;letter-spacing:-.02em}
+.head p{margin:0;color:var(--ink-2);font-size:18px;max-width:36em}
+.dark h2,.dark h3{color:#fff}
+.dark .head p,.dark p{color:#B4C6D2}
+h3{font-size:20px;line-height:1.25;margin:0 0 8px;font-weight:700}
+.prose p{max-width:40em;margin:0 0 18px}
+.prose p:last-child{margin-bottom:0}
+.dark a{color:#fff}
+
+/* features */
+.feat-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:56px;align-items:start}
+.art{margin:0;background:var(--sea);border:1px solid var(--rule);position:sticky;top:96px}
+.art svg{display:block;width:100%;height:auto}
+.art figcaption{padding:12px 18px;font:500 13px Archivo;color:var(--dmuted);border-top:1px solid var(--drule);background:var(--abyss-2)}
+.feats > div{padding:26px 0;border-top:1px solid var(--rule-2)}
+.feats > div:last-child{border-bottom:1px solid var(--rule-2)}
+.feats p{margin:0;color:var(--ink-2);font-size:16.5px}
+.cols-2{display:grid;grid-template-columns:1fr 1fr;gap:48px}
+.cols-3{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:56px;border-top:1px solid var(--rule-2)}
+.cols-3 > div{padding:26px 28px 0 0;margin-right:28px;border-right:1px solid var(--rule)}
+.cols-3 > div:last-child{border-right:0;margin-right:0}
+.cols-3 p{margin:0;font-size:16px;color:var(--ink-2)}
+.dark .cols-3{border-color:var(--drule-2)}
+.dark .cols-3 > div{border-color:var(--drule)}
+.dark .cols-3 p{color:var(--dmuted)}
+
+/* data boards */
+.board{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--drule-2);background:rgba(15,44,66,.35);margin:0 0 40px}
+.board div{padding:22px 22px 24px;border-right:1px solid var(--drule)}
+.board div:last-child{border-right:0}
+.board b{display:block;font:800 40px/1 Archivo;color:#fff;font-stretch:106%;letter-spacing:-.02em}
+.board span{display:block;font:500 13px Archivo;color:var(--dmuted);margin-top:8px}
+section:not(.dark) .board{background:var(--abyss)}
+
+table.data{width:100%;border-collapse:collapse;font-size:15.5px}
+table.data caption{text-align:left;font:700 15px Archivo;padding:0 0 12px;color:inherit}
+table.data th,table.data td{text-align:left;padding:13px 16px 13px 0;border-top:1px solid var(--rule);vertical-align:top}
+table.data thead th{font-size:13px;font-weight:600;color:var(--muted);border-top:0;border-bottom:1px solid var(--rule-2);padding-bottom:10px}
+table.data tbody tr:last-child td,table.data tbody tr:last-child th{border-bottom:1px solid var(--rule)}
+table.data td.v{text-align:right;font-weight:700;white-space:nowrap;padding-right:0}
+table.data tbody th{font-weight:500;color:var(--muted);width:38%}
+.dark table.data th,.dark table.data td{border-color:var(--drule)}
+.dark table.data thead th{color:var(--dmuted);border-color:var(--drule-2)}
+.dark table.data td{color:var(--dtext)}
+.dark table.data td.v{color:#fff}
+.dark table.data caption{color:#fff}
+.table-scroll{overflow-x:auto}
+
+.spec{display:grid;grid-template-columns:1fr 1fr;column-gap:56px;border-top:1px solid var(--rule-2)}
+.spec div{display:flex;justify-content:space-between;gap:24px;padding:15px 0;border-bottom:1px solid var(--rule)}
+.spec dt{color:var(--muted);font:500 15px Archivo}
+.spec dd{margin:0;font:600 15px Archivo;text-align:right}
+
+.caveat{border-left:3px solid var(--brass);background:rgba(224,169,44,.08);padding:26px 30px;margin:40px 0 0;max-width:62em}
+.caveat h3{margin-top:0}
+.caveat p{margin:0 0 14px;font-size:16.5px}
+.caveat p:last-child{margin-bottom:0}
+.dark .caveat{background:rgba(224,169,44,.07)}
+.dark .caveat p{color:#C9D8E1}
+
+pre{background:var(--abyss);color:#DCE6EC;border:1px solid var(--drule-2);padding:22px 24px;overflow-x:auto;font:400 14px/1.65 "IBM Plex Mono",ui-monospace,monospace;margin:28px 0 10px}
+.dark pre{background:#030C13}
+pre .c{color:#6F8797} pre .k{color:#F0BD48} pre .s{color:#45C29A}
+.code-caption{font:400 13.5px/1.55 Archivo;color:var(--muted);margin:0 0 30px;max-width:56em}
+.dark .code-caption{color:var(--dmuted)}
+
+/* pricing */
+.plans{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:stretch}
+.plan{background:var(--panel);border:1px solid var(--rule);padding:38px 36px 34px;display:flex;flex-direction:column;position:relative}
+.plan h3{font-size:22px;margin:0 0 6px}
+.plan .who{margin:0 0 22px;color:var(--ink-2);font-size:16px}
+.plan .price{font:800 58px/1 Archivo;font-stretch:106%;letter-spacing:-.02em;margin:0 0 8px}
+.plan .price small,.plan .price em{font:500 16px Archivo;color:var(--muted);font-style:normal;letter-spacing:0}
+.plan .was{font:500 13.5px Archivo;color:var(--muted);margin:0 0 24px}
+.plan ul{list-style:none;margin:0 0 28px;padding:0;font:15.5px/1.5 Archivo}
+.plan li{padding:9px 0 9px 26px;border-top:1px solid var(--rule);position:relative}
+.plan li::before{content:"";position:absolute;left:2px;top:17px;width:10px;height:5px;border-left:2px solid var(--up);border-bottom:2px solid var(--up);transform:rotate(-45deg)}
+.plan .pay-slot{margin-top:auto;min-height:56px}
+.plan.pick{background:var(--abyss);color:var(--dtext);border-color:var(--abyss)}
+.plan.pick h3,.plan.pick .price{color:#fff}
+.plan.pick .who{color:#B4C6D2}
+.plan.pick .price small,.plan.pick .price em,.plan.pick .was{color:var(--dmuted)}
+.plan.pick li{border-color:var(--drule)}
+.plan.pick li::before{border-color:var(--sig)}
+.plan .tag{position:absolute;top:-1px;right:28px;transform:translateY(-50%);background:var(--brass);color:#1A1206;font:700 12.5px Archivo;padding:5px 12px}
+.hint{font:400 14.5px/1.6 Archivo;color:var(--muted);margin:26px 0 0;max-width:60em}
+
+/* steps: real sequences only */
+ol.steps{list-style:none;counter-reset:st;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,1fr);gap:0 56px}
+ol.steps li{counter-increment:st;position:relative;padding:26px 0 26px 64px;border-top:1px solid var(--rule-2)}
+ol.steps li::before{content:counter(st);position:absolute;left:0;top:22px;font:800 38px/1 Archivo;font-stretch:108%;color:var(--brass)}
+ol.steps li b,ol.steps li strong:first-child{display:block;font:700 18px/1.3 Archivo;margin:0 0 6px}
+ol.steps li p{margin:0;color:var(--ink-2);font-size:16px}
+ol.steps li{font-size:16px;color:var(--ink-2)}
+
+/* faq */
+.faq-list{border-top:1px solid var(--rule-2);max-width:880px}
+details{border-bottom:1px solid var(--rule-2)}
+summary{list-style:none;cursor:pointer;padding:22px 48px 22px 0;font:600 18.5px/1.35 Archivo;position:relative}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"";position:absolute;right:8px;top:50%;width:14px;height:14px;margin-top:-7px;
+  background:linear-gradient(currentColor,currentColor) center/14px 2px no-repeat,linear-gradient(currentColor,currentColor) center/2px 14px no-repeat;transition:transform .2s}
+details[open] summary::after{transform:rotate(45deg)}
+summary:hover{color:var(--up)}
+details p{margin:0 0 24px;max-width:46em;color:var(--ink-2)}
+details code{background:rgba(15,44,66,.07);padding:1px 5px}
+
+/* contact strip */
+.contact{background:var(--brass);color:#1A1206;padding:72px 0}
+.contact .wrap{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+.contact h2{font-size:clamp(30px,3.6vw,46px)}
+.contact p{margin:0;font-size:18px}
+.contact a.mail{font:700 20px Archivo;word-break:break-word}
+
+/* footer */
+footer{background:var(--abyss);color:var(--dmuted);font:14px/1.6 Archivo;padding:72px 0 56px}
+footer .cols{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:48px;padding-bottom:44px;border-bottom:1px solid var(--drule)}
+footer h4{margin:0 0 14px;color:#fff;font-size:14px;font-weight:600}
+footer ul{list-style:none;margin:0;padding:0}
+footer li{margin:0 0 8px}
+footer a{text-decoration:none;color:var(--dtext)}
+footer a:hover{color:#fff;text-decoration:underline}
+footer .brand{margin-bottom:16px}
+footer .legal{padding-top:28px;font-size:12.5px;color:#6F8797}
+footer .legal p{margin:0 0 10px;max-width:74em}
+footer .legal strong{color:var(--dmuted)}
+
+@media (max-width:1040px){
+  .hero > .wrap{grid-template-columns:1fr;gap:56px;padding-top:70px;padding-bottom:80px}
+  .feat-grid{grid-template-columns:1fr;gap:36px}
+  .art{position:static}
+  .top nav a.opt{display:none}
+}
+@media (max-width:760px){
+  body{font-size:16.5px}
+  .wrap{padding:0 20px}
+  .top nav a:not(.pill){display:none}
+  .brand .prod{display:none}
+  section{padding:72px 0}
+  .head{grid-template-columns:1fr;gap:16px;margin-bottom:36px}
+  .principles .wrap,.cols-2,.cols-3,.plans,.spec,ol.steps,.contact .wrap,footer .cols{grid-template-columns:1fr}
+  .principles div{border-right:0;margin-right:0;padding:24px 0;border-bottom:1px solid var(--drule)}
+  .principles div:last-child{border-bottom:0}
+  .cols-3 > div{border-right:0;margin-right:0;padding:22px 0;border-bottom:1px solid var(--rule)}
+  .cols-2{gap:28px}
+  .inst-grid,.board{grid-template-columns:repeat(2,1fr)}
+  .inst-grid div:nth-child(2),.board div:nth-child(2){border-right:0}
+  .inst-grid div:nth-child(-n+2),.board div:nth-child(-n+2){border-bottom:1px solid var(--drule)}
+  .inst-big .num{font-size:44px}
+  .board b{font-size:32px}
+  .plan{padding:30px 24px}
+  .plan .price{font-size:48px}
+  ol.steps li{padding-left:52px}
+  .contact{padding:56px 0}
+  .contact .wrap{gap:18px}
+  footer .cols{gap:32px}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *{animation:none!important;transition:none!important}
+  .draw{stroke-dashoffset:0}.fade{opacity:1}
+}
+/* ---- Trading Command Center additions ---- */
+.hero .instrument{max-width:470px;justify-self:end;width:100%}
+.phone-body{padding:16px 14px 18px;display:flex;flex-direction:column;gap:9px;background:#0E2231}
+.chat-head{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--drule);background:#12293A}
+.chat-head .av{width:34px;height:34px;border-radius:50%;background:#2AABEE;display:flex;align-items:center;justify-content:center;flex:none}
+.chat-head .av svg{width:18px;height:18px}
+.chat-head b{display:block;font:600 14.5px Archivo;color:#fff}
+.chat-head small{display:block;font:400 12px Archivo;color:var(--dmuted)}
+.msg{align-self:flex-start;max-width:92%;background:#1B3A4E;color:#E7EEF2;font:400 13.5px/1.45 Archivo;padding:9px 12px 7px;border-radius:2px 12px 12px 12px;white-space:pre-line;opacity:0;transform:translateY(6px);animation:msgin .45s forwards}
+.msg.me{align-self:flex-end;background:#2B5278;border-radius:12px 2px 12px 12px}
+.msg b{font-weight:700;color:#fff}
+.msg .up{color:var(--sig);font-weight:700} .msg .dn{color:var(--sig-down);font-weight:700}
+.msg time{display:block;text-align:right;font-size:11px;color:var(--dmuted);margin-top:2px}
+.msg .shot{display:block;margin:6px 0 2px;background:#0A1B27;border:1px solid var(--drule)}
+.msg .shot svg{display:block;width:100%;height:auto}
+.kb{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:-3px;opacity:0;animation:msgin .45s forwards}
+.kb span{background:rgba(255,255,255,.09);color:#E7EEF2;font:500 12px Archivo;text-align:center;padding:7px 4px;border-radius:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@keyframes msgin{to{opacity:1;transform:none}}
+
+.groups{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid var(--rule-2)}
+.groups > div{padding:30px 30px 0 0;margin-right:30px;border-right:1px solid var(--rule)}
+.groups > div:last-child{border-right:0;margin-right:0}
+.groups .n{font:800 15px Archivo;color:var(--brass);letter-spacing:.06em;margin:0 0 10px}
+.groups p{margin:0 0 16px;color:var(--ink-2);font-size:16px}
+.ticks{list-style:none;margin:0;padding:0;font:15px/1.45 Archivo}
+.ticks li{padding:10px 0 10px 24px;border-top:1px solid var(--rule);position:relative}
+.ticks li::before{content:"";position:absolute;left:2px;top:17px;width:9px;height:5px;border-left:2px solid var(--up);border-bottom:2px solid var(--up);transform:rotate(-45deg)}
+.dark .ticks li{border-color:var(--drule)} .dark .ticks li::before{border-color:var(--sig)}
+
+.langs{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 0}
+.langs span{font:600 13px Archivo;border:1px solid var(--rule-2);padding:5px 11px;background:var(--panel)}
+
+table.cmds td:first-child{white-space:nowrap}
+table.cmds code{background:rgba(15,44,66,.07);padding:1px 6px}
+.dark table.cmds code{background:rgba(255,255,255,.08);color:#fff}
+
+.consent{display:flex;gap:12px;align-items:flex-start;max-width:60em;margin:0 0 28px;padding:16px 18px;background:#fff;border:1px solid var(--rule-2);font:400 15px/1.55 Archivo;color:var(--ink-2);cursor:pointer}
+.consent input{width:20px;height:20px;margin:2px 0 0;flex:none;accent-color:var(--sea);cursor:pointer}
+.consent.warn{border-color:var(--down);box-shadow:0 0 0 2px rgba(190,58,43,.15)}
+.pay-note{font:500 13px/1.5 Archivo;color:var(--muted);margin:10px 0 0}
+.plan.pick .pay-note{color:var(--dmuted)}
+.btn.block{width:100%;justify-content:center}
+.btn[aria-disabled="true"]{opacity:.45;cursor:not-allowed}
+.soon{display:block;text-align:center;font:600 14px Archivo;padding:15px;border:1px dashed var(--rule-2);color:var(--muted)}
+.plan.pick .soon{border-color:var(--drule-2);color:var(--dmuted)}
+
+.paid{background:var(--up);color:#fff;padding:22px 0}
+.paid .wrap{display:flex;gap:18px;align-items:flex-start}
+.paid b{display:block;font:700 19px Archivo;margin-bottom:4px}
+.paid p{margin:0;font:400 15.5px/1.55 Archivo;color:#E3F2EC}
+.paid a{color:#fff}
+.paid svg{width:30px;height:30px;flex:none;margin-top:2px}
+@media (max-width:760px){
+  .groups{grid-template-columns:1fr}
+  .groups > div{border-right:0;margin-right:0;padding:24px 0;border-bottom:1px solid var(--rule)}
+  .hero .instrument{justify-self:stretch;max-width:none}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="https://wisfli.com/"><svg viewBox="0 0 60 40" aria-hidden="true"><path d="M0 0h60v40H0z" fill="#14528C"/><path d="M8 8h44v24H8z" fill="#fff"/><path d="M18 14h24v12H18z" fill="#C8322A"/></svg>WISFLI <span class="prod">/ Trading Command Center</span></a>
+    <nav aria-label="Page">
+      <a href="#what">What it does</a>
+      <a href="#reports">Reports</a>
+      <a href="#control">Control</a>
+      <a href="#safety" class="opt">Safety</a>
+      <a href="#faq" class="opt">FAQ</a>
+      <a class="pill" href="#pricing">Buy</a>
+    </nav>
+  </div>
+</header>
+
+<div class="paid" id="paid" role="status" hidden>
+  <div class="wrap">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="none" stroke="#fff" stroke-width="2"/><path d="M6.5 12.5l3.5 3.5 7.5-8" fill="none" stroke="#fff" stroke-width="2.2"/></svg>
+    <div>
+      <b>Payment received. Thank you.</b>
+      <p>Your licence key and the file are on their way from <strong>licenses@wisfli.com</strong> to the email of your payment account, usually within a couple of minutes. If nothing arrives, check the spam folder, then write to <a href="mailto:support@wisfli.com">support@wisfli.com</a>.</p>
+    </div>
+  </div>
+</div>
+
+<main id="main">
+
+<div class="hero">
+  <div class="wrap">
+    <div>
+      <p class="where"><i></i>Expert Advisor for MetaTrader 5 · Telegram and Discord</p>
+      <h1 class="long">Your MetaTrader 5 account, run from a chat</h1>
+      <p class="lede">Trading Command Center sends every entry and exit to Telegram or Discord the moment it happens, with the reason it closed, the result in your account currency and the magic number of the bot that took it. From the same chat you pull reports for any period or any bot, move stops and close positions.</p>
+      <p class="lede">It watches the whole account from one chart. Trading from the chat stays switched off until you turn it on.</p>
+      <div class="actions">
+        <a class="btn brass" href="#pricing">See pricing</a>
+        <a class="btn line" href="#what">What it sends</a>
+      </div>
+    </div>
+
+    <aside class="instrument" aria-label="Example Telegram conversation with Trading Command Center">
+      <div class="chat-head"><span class="av"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#fff" d="M21.9 4.3 18.7 19.5c-.2 1-.9 1.3-1.8.8l-4.9-3.6-2.4 2.3c-.3.3-.5.5-1 .5l.3-5 9.2-8.3c.4-.4-.1-.6-.6-.2L6.2 13.2l-4.9-1.5c-1.1-.3-1.1-1.1.2-1.6l19.1-7.4c.9-.3 1.7.2 1.3 1.6z"/></svg></span><span><b>Command Center</b><small>bot · example messages</small></span></div>
+      <div class="phone-body">
+        <div class="msg" style="animation-delay:.2s"><b>🚀 ENTRY FILLED</b>
+XAUUSD  BUY · 0.10 lots at 2,318.40
+🤖 Magic 88881<span class="shot" id="shot"></span><time>09:14</time></div>
+        <div class="msg" style="animation-delay:.55s"><b>🟢 EXIT FILLED</b>
+🎯 TAKE PROFIT · +84.2 pips
+Net <span class="up">+€84.20</span> · held 5h 12m<time>14:26</time></div>
+        <div class="msg me" style="animation-delay:.9s">/today<time>18:02</time></div>
+        <div class="msg" style="animation-delay:1.15s"><b>📉 SUMMARY — TODAY</b>
+Trades 6 · ✅ 3 ❌ 3 · PF 0.94
+Max DD €41.30 · NET <span class="dn">−€6.10</span><time>18:02</time></div>
+        <div class="kb" style="animation-delay:1.35s" aria-hidden="true"><span>🛰️ Dashboard</span><span>🛡️ Risk</span><span>📊 Positions</span><span>📅 Today</span><span>🤖 Bots</span><span>🛑 STOP</span></div>
+      </div>
+      <p class="inst-foot">Illustrative messages with invented figures. Your chat shows your own account, in your language.</p>
+    </aside>
+  </div>
+</div>
+
+<div class="principles">
+  <div class="wrap">
+    <div><h3>One chart watches everything</h3><p>Every trade on the account is reported, whichever EA or person placed it, filtered by symbol or magic number if you want.</p></div>
+    <div><h3>Nothing trades by accident</h3><p>Chat trading ships switched off. When enabled, every order needs a confirmation that expires in two minutes.</p></div>
+    <div><h3>Seven languages</h3><p>English, Spanish, Portuguese, French, German, Russian and Chinese. It follows your terminal, or switch with /lang.</p></div>
+  </div>
+</div>
+
+<section id="what">
+  <div class="wrap">
+    <div class="head">
+      <h2>What arrives on your phone</h2>
+      <p>Built to follow a VPS full of bots without opening the terminal: know what happened, which bot did it, and whether the account is still inside the limits you set.</p>
+    </div>
+
+    <div class="groups">
+      <div>
+        <p class="n">01 · ALERTS</p>
+        <h3>Every trade, as it happens</h3>
+        <p>Messages are built from the deal itself, so a close from the phone app, the web terminal or a stop-out is reported the same way.</p>
+        <ul class="ticks">
+          <li>Entries and exits with price, lots and magic number</li>
+          <li>Why it closed: stop loss, take profit, manual, EA, stop-out</li>
+          <li>Net result after swap and commission, in your account currency, plus pips and time held</li>
+          <li>New pending orders</li>
+          <li>Chart screenshot attached when the trade is on the chart’s symbol</li>
+        </ul>
+      </div>
+      <div>
+        <p class="n">02 · REPORTS</p>
+        <h3>Performance on demand</h3>
+        <p>Ask for any period and get the numbers that matter, for the whole account or for a single bot.</p>
+        <ul class="ticks">
+          <li>Today, 7, 15 and 30 days, this month, all time or any dates</li>
+          <li>Report per bot, by magic number</li>
+          <li>Side-by-side ranking of every bot</li>
+          <li>Periodic summary while positions are open, daily balance when idle</li>
+          <li>Regular heartbeat, so silence means something</li>
+        </ul>
+      </div>
+      <div>
+        <p class="n">03 · CONTROL</p>
+        <h3>Act without a laptop</h3>
+        <p>Buttons for the common actions, text commands for the rest. Only your own chat is obeyed.</p>
+        <ul class="ticks">
+          <li>Open positions, paged and filtered by bot</li>
+          <li>Close one position with a tap, or all of them</li>
+          <li>Move or remove stop loss and take profit</li>
+          <li>Open market orders, with confirmation</li>
+          <li>Kill-switch that blocks new trades</li>
+        </ul>
+      </div>
+    </div>
+    <div class="langs" aria-label="Languages"><span>English</span><span>Español</span><span>Português</span><span>Français</span><span>Deutsch</span><span>Русский</span><span>中文</span></div>
+  </div>
+</section>
+
+<section id="reports" class="dark">
+  <div class="wrap">
+    <div class="head">
+      <h2>Reports you would otherwise build in a spreadsheet</h2>
+      <p>Calculated inside your terminal from the account history, every time you ask. Nothing is sent anywhere except to your own chat.</p>
+    </div>
+
+    <div class="cols-2">
+      <div class="table-scroll">
+        <table class="data">
+          <caption>In every report</caption>
+          <thead><tr><th scope="col">Figure</th><th scope="col">What it tells you</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Profit factor</th><td>Gross profit divided by gross loss</td></tr>
+            <tr><th scope="row">Win rate, streaks</th><td>Hit rate and longest winning and losing runs</td></tr>
+            <tr><th scope="row">Expectancy, payoff</th><td>Average result per trade and average win against average loss</td></tr>
+            <tr><th scope="row">Max drawdown</th><td>Deepest fall in money and as a share of capital</td></tr>
+            <tr><th scope="row">Recovery factor</th><td>Net result divided by the maximum drawdown</td></tr>
+            <tr><th scope="row">Sharpe per trade</th><td>Mean trade result over its standard deviation</td></tr>
+            <tr><th scope="row">Costs</th><td>Commissions and swaps, shown apart</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="prose">
+        <h3>Deposits do not distort the return</h3>
+        <p>Account reports show the return on starting capital and a time-weighted return that chains each stretch between deposits and withdrawals, so topping up the account does not look like trading profit.</p>
+        <h3>Each bot keeps its own trades</h3>
+        <p>A position belongs to the magic number that opened it. If you close it by hand, or another EA closes it, the result still counts for the bot that took the trade. That is what makes the per-bot reports and the ranking honest.</p>
+        <p>Reports describe what already happened on your account. They do not forecast anything.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="control">
+  <div class="wrap">
+    <div class="head">
+      <h2>Control from the chat</h2>
+      <p>The menu buttons cover daily use. Commands are there when you want something specific. English and Spanish forms both work, whatever language the messages use.</p>
+    </div>
+    <div class="table-scroll">
+      <table class="data cmds">
+        <thead><tr><th scope="col">Command</th><th scope="col">What it does</th></tr></thead>
+        <tbody>
+          <tr><td><code>/menu</code> <code>/dashboard</code></td><td>Balance, equity, floating P/L, margin and the button menu</td></tr>
+          <tr><td><code>/today</code> <code>/week</code> <code>/month</code> <code>/all</code></td><td>Account report for that period</td></tr>
+          <tr><td><code>/summary 2026-01-01 2026-03-31</code></td><td>Report between any two dates</td></tr>
+          <tr><td><code>/bots</code> · <code>/bot 88881</code></td><td>Ranking of every bot, or the full report of one</td></tr>
+          <tr><td><code>/photo</code></td><td>Screenshot of the chart the EA runs on</td></tr>
+          <tr><td><code>/sltp TICKET SL TP</code></td><td>Move stop loss and take profit; <code>0</code> removes, <code>=</code> keeps</td></tr>
+          <tr><td><code>/close TICKET</code> · <code>/closeall</code></td><td>Close one position, or all after confirmation</td></tr>
+          <tr><td><code>/buy XAUUSD 0.10 SL TP</code></td><td>Market order, shown for confirmation first</td></tr>
+          <tr><td><code>/stop</code> · <code>/resume</code></td><td>Kill-switch on and off</td></tr>
+          <tr><td><code>/risk</code> · <code>/health</code> · <code>/lang</code></td><td>Risk limits, EA status, language</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="safety" class="panel">
+  <div class="wrap">
+    <div class="head">
+      <h2>Built so a phone cannot wreck an account</h2>
+      <p>Remote control is useful right up to the moment someone else has your phone, or you mistype a lot size. These guards are always there.</p>
+    </div>
+    <div class="cols-3" style="margin-top:0">
+      <div><h3>Off until you say so</h3><p>Opening and closing from the chat is disabled by default. Alerts and reports work without it.</p></div>
+      <div><h3>Only your chat</h3><p>Commands from any other chat or group are ignored. Your bot token stays in your own terminal.</p></div>
+      <div><h3>Confirm, or nothing happens</h3><p>Orders and close-all show what will be done and wait for a tap. After two minutes the request expires.</p></div>
+    </div>
+    <div class="cols-3">
+      <div><h3>Kill-switch that sticks</h3><p><code>/stop</code> blocks new trades and survives a restart of the EA or the terminal. Closing and stop changes remain available.</p></div>
+      <div><h3>Risk guard</h3><p>Maximum lot size, open positions, daily loss, risk per trade when a stop is set, and spread. An order outside them is refused with the reason.</p></div>
+      <div><h3>Symbol whitelist</h3><p>Limit which symbols may be opened from the chat, so a typo cannot land on an instrument you never trade.</p></div>
+    </div>
+    <div class="caveat">
+      <h3>What it does not do</h3>
+      <p>It does not decide trades or give signals. It reports and executes what you, or your own EAs, decide. Leverage can cost more than a deposit, and a remote order is still a real order.</p>
+    </div>
+  </div>
+</section>
+
+<section id="spec">
+  <div class="wrap">
+    <div class="head solo"><h2>Specification</h2></div>
+    <dl class="spec">
+      <div><dt>Platform</dt><dd>MetaTrader 5, any broker</dd></div>
+      <div><dt>Channels</dt><dd>Telegram, Discord, or both</dd></div>
+      <div><dt>Scope</dt><dd>Whole account from one chart</dd></div>
+      <div><dt>Filters</dt><dd>Symbols and magic numbers</dd></div>
+      <div><dt>Languages</dt><dd>EN, ES, PT, FR, DE, RU, ZH</dd></div>
+      <div><dt>Amounts</dt><dd>In the account currency</dd></div>
+      <div><dt>Runs on</dt><dd>Windows PC or VPS with MT5 open</dd></div>
+      <div><dt>Delivered as</dt><dd>Compiled .ex5 by email</dd></div>
+      <div><dt>Licence</dt><dd>3 live + 3 demo accounts</dd></div>
+      <div><dt>Web requests allowed</dt><dd class="mono">api.telegram.org · discord.com · api.wisfli.com</dd></div>
+    </dl>
+  </div>
+</section>
+
+<section id="pricing" class="panel">
+  <div class="wrap">
+    <div class="head">
+      <h2>Pricing</h2>
+      <p>Both plans include every feature, the seven languages and all updates. The key and the file arrive by email a couple of minutes after payment.</p>
+    </div>
+
+    <label class="consent" id="consentBox">
+      <input type="checkbox" id="consent">
+      <span>I want the licence delivered immediately, and I understand that once it has been delivered I lose the 14-day right of withdrawal for digital content. I accept the <a href="terms.html">licence terms</a> and the <a href="terms.html#privacy">privacy policy</a>.</span>
+    </label>
+
+    <div class="plans">
+      <div class="plan">
+        <h3>Monthly subscription</h3>
+        <p class="who">Pay while you use it. The easiest way to try it on your own account.</p>
+        <p class="price"><span data-price="monthly">€19</span> <em>/ month</em></p>
+        <p class="was">VAT included, cancel any time in PayPal</p>
+        <ul>
+          <li>3 live and 3 demo accounts</li>
+          <li>Every feature and all updates</li>
+          <li>Stops at the end of the paid month if you cancel</li>
+          <li>Email support</li>
+        </ul>
+        <div class="pay-slot" id="pay-monthly"><span class="soon">Available soon</span></div>
+      </div>
+
+      <div class="plan pick">
+        <span class="tag">One payment</span>
+        <h3>Lifetime licence</h3>
+        <p class="who">For keeping it on your VPS for good.</p>
+        <p class="price"><span data-price="lifetime">€99</span></p>
+        <p class="was">VAT included, no renewals</p>
+        <ul>
+          <li>3 live and 3 demo accounts, no expiry</li>
+          <li>Lifetime updates</li>
+          <li>Free account changes from your licence page</li>
+          <li>Direct line to the developer</li>
+        </ul>
+        <div class="pay-slot" id="pay-lifetime"><span class="soon">Available soon</span></div>
+      </div>
+    </div>
+
+    <p class="hint">The licence key is sent to the email of the account you pay with (for PayPal, your PayPal email). You can see and free linked accounts at any time on <a href="https://api.wisfli.com/manage">your licence page</a>.</p>
+  </div>
+</section>
+
+<section id="licence">
+  <div class="wrap">
+    <div class="head">
+      <h2>From payment to first alert</h2>
+      <p>About ten minutes, most of it creating the Telegram bot.</p>
+    </div>
+    <ol class="steps">
+      <li><strong>Pay</strong><p>Monthly with PayPal or once with card through Stripe.</p></li>
+      <li><strong>Check your email</strong><p>From licenses@wisfli.com: your key in the form <span class="mono">WSF-XXXXX-XXXXX-XXXXX-XXXXX</span>, the file attached and a private download link.</p></li>
+      <li><strong>Create your Telegram bot</strong><p>With @BotFather, in two minutes. You keep the token; it never leaves your terminal.</p></li>
+      <li><strong>Allow three web addresses</strong><p>In MT5, Tools, Options, Expert Advisors: api.telegram.org, discord.com and api.wisfli.com.</p></li>
+      <li><strong>Attach it to one chart</strong><p>Paste the licence key, the bot token and your chat ID. A start message confirms it is running.</p></li>
+      <li><strong>Change accounts yourself</strong><p>The first accounts link on their own. Free one from your licence page whenever you move brokers.</p></li>
+    </ol>
+  </div>
+</section>
+
+<section id="faq" class="panel">
+  <div class="wrap">
+    <div class="head solo"><h2>Questions</h2></div>
+    <div class="faq-list">
+      <details>
+        <summary>Is there a free trial?</summary>
+        <p>No. MetaTrader 5 blocks internet requests inside the Strategy Tester, so a tool that talks to Telegram cannot be shown there, and there is no demo licence. The monthly plan is the way to try it: one month, cancel in PayPal, and it stops at the end of the paid period. This page and the command list show exactly what you get.</p>
+      </details>
+      <details>
+        <summary>Does it work with EAs from other developers?</summary>
+        <p>Yes. It reads the account, not a particular EA, so it reports trades from any Expert Advisor, from your phone app or from the web terminal. Give each EA its own magic number and the per-bot reports separate them.</p>
+      </details>
+      <details>
+        <summary>Can it open trades on my account without me?</summary>
+        <p>No. It never decides a trade. Orders from the chat are disabled by default, need your confirmation when enabled, respect the risk guard, and only your own chat is obeyed.</p>
+      </details>
+      <details>
+        <summary>What happens if my internet or the licence server goes down?</summary>
+        <p>The licence is checked when the EA starts and every few hours. If the check server cannot be reached, a recent valid check keeps it working for up to three days. Telegram alerts need your terminal to reach Telegram, as they always would.</p>
+      </details>
+      <details>
+        <summary>Do I need a VPS?</summary>
+        <p>Only if you want alerts while your computer is off. It runs wherever MT5 runs and stays open: a PC left on, or a Windows VPS near your broker.</p>
+      </details>
+      <details>
+        <summary>What data does it send to Wisfli?</summary>
+        <p>Only what the licence check needs: your key, your MT5 account number and server, and whether the account is demo or live. Trades, balances, reports and your Telegram token stay between your terminal and your chat. Details are in the <a href="terms.html#privacy">privacy policy</a>.</p>
+      </details>
+      <details>
+        <summary>I changed broker. Do I need a new key?</summary>
+        <p>No. The same key works on up to three live and three demo accounts. When you need a slot, free an old account on <a href="https://api.wisfli.com/manage">your licence page</a> with your key and purchase email.</p>
+      </details>
+      <details>
+        <summary>How do I cancel the subscription?</summary>
+        <p>In your PayPal account, under automatic payments. The EA keeps working until the end of the month you already paid and then stops on its own. Nothing else to do.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="contact">
+  <div class="wrap">
+    <h2>Questions before you buy?</h2>
+    <div>
+      <p>Ask whether it fits your setup, your broker or the EAs you run. The answer comes from the person who wrote it.</p>
+      <p style="margin-top:14px"><a class="mail" href="mailto:support@wisfli.com">support@wisfli.com</a></p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="https://wisfli.com/"><svg viewBox="0 0 60 40" aria-hidden="true"><path d="M0 0h60v40H0z" fill="#14528C"/><path d="M8 8h44v24H8z" fill="#fff"/><path d="M18 14h24v12H18z" fill="#C8322A"/></svg>WISFLI</a>
+        <p style="margin:0;max-width:26em">Trading Command Center is built and supported by one person in Alicante.</p>
+      </div>
+      <div>
+        <h4>Trading Command Center</h4>
+        <ul>
+          <li><a href="https://api.wisfli.com/manage">Your licence page</a></li>
+          <li><a href="terms.html">Licence terms</a></li>
+          <li><a href="terms.html#privacy">Privacy</a></li>
+          <li><a href="../">All tools</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Wisfli</h4>
+        <ul>
+          <li><a href="https://wisfli.com/">wisfli.com</a></li>
+          <li><a href="https://jsgaston.github.io/candlegrid-web-en/">CandleGrid Pro</a></li>
+          <li><a href="https://jsgaston.github.io/regimeswitch-web-en/">RegimeSwitch Pro</a></li>
+          <li><a href="https://jsgaston.github.io/armada/">Armada signal</a></li>
+          <li><a href="mailto:support@wisfli.com">support@wisfli.com</a></li>
+          <li><a href="mailto:licenses@wisfli.com">licenses@wisfli.com</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="legal">
+      <p><strong>Risk warning.</strong> Trading foreign exchange, metals and leveraged CFDs carries a high level of risk and is not suitable for every investor. Leverage magnifies losses as well as gains and you can lose the entire capital you commit. Trading Command Center is a software tool that reports on and executes the instructions of its user: it is not financial advice, an investment recommendation, a signal or a portfolio management service, and it guarantees no result.</p>
+      <p>© <span id="yr">2026</span> Wisfli. Trading as Javier Santiago Gastón de Iriarte Cabrera, Tax ID 47033535F, Alicante, Spain.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* =====================================================================
+   Edit here. Leave a value empty and its button shows "Available soon".
+   ===================================================================== */
+var CHECKOUT = {
+  // Stripe Payment Link for the lifetime licence (https://buy.stripe.com/...).
+  // In Stripe, set "After payment" to redirect to this page with ?paid=1
+  stripeLifetimeUrl: "",
+  // PayPal subscription plan for the monthly licence (P-...)
+  paypalPlanId: "",
+  // Public PayPal client id (the same one used on the other product pages)
+  paypalClientId: "AWa_6Af93UGQdocFcdOmDgC6xGjFV4Kp-8yeFyZ6DhHqPDnHt6kK5xQdSenwitI1-a0kk4Sc4DeCYK9N"
+};
+
+document.getElementById('yr').textContent = new Date().getFullYear();
+
+/* Candles for the screenshot inside the example alert */
+(function(){
+  var seed = 11, r = function(){ seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; };
+  var n = 26, W = 300, H = 92, p = 46, g = '';
+  for (var i = 0; i < n; i++) {
+    var o = p, c = Math.max(12, Math.min(80, o + (r() - .42) * 15)); p = c;
+    var hi = Math.max(o, c) + r() * 6, lo = Math.min(o, c) - r() * 6, x = 8 + i * (W - 16) / n, w = (W - 16) / n * .6, col = c >= o ? '#45C29A' : '#E8715F';
+    g += '<line x1="' + (x + w / 2).toFixed(1) + '" x2="' + (x + w / 2).toFixed(1) + '" y1="' + (H - hi).toFixed(1) + '" y2="' + (H - lo).toFixed(1) + '" stroke="' + col + '"/>';
+    g += '<rect x="' + x.toFixed(1) + '" y="' + (H - Math.max(o, c)).toFixed(1) + '" width="' + w.toFixed(1) + '" height="' + Math.max(1.5, Math.abs(o - c)).toFixed(1) + '" fill="' + col + '"/>';
+  }
+  g += '<line x1="8" x2="' + (W - 8) + '" y1="' + (H - p).toFixed(1) + '" y2="' + (H - p).toFixed(1) + '" stroke="#E0A92C" stroke-dasharray="3 3"/>';
+  document.getElementById('shot').innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" aria-hidden="true">' + g + '</svg>';
+})();
+
+/* Confirmation banner after payment (?paid=1 from Stripe, or PayPal approval) */
+function showPaid(){
+  var el = document.getElementById('paid');
+  el.hidden = false;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+if (/[?&]paid=1\b/.test(location.search)) showPaid();
+
+/* Withdrawal-right consent gates both checkouts */
+var consent = document.getElementById('consent');
+var consentBox = document.getElementById('consentBox');
+var consentListeners = [];
+function consentOk(){
+  if (consent.checked) { consentBox.classList.remove('warn'); return true; }
+  consentBox.classList.add('warn');
+  consentBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  return false;
+}
+consent.addEventListener('change', function(){
+  if (consent.checked) consentBox.classList.remove('warn');
+  consentListeners.forEach(function(fn){ fn(consent.checked); });
+});
+
+/* Lifetime: Stripe Payment Link */
+(function(){
+  if (!CHECKOUT.stripeLifetimeUrl) return;
+  var slot = document.getElementById('pay-lifetime');
+  slot.innerHTML = '<a class="btn brass block" id="stripeBtn" href="' + CHECKOUT.stripeLifetimeUrl.replace(/"/g, '') + '" aria-disabled="true">Buy lifetime licence</a><p class="pay-note">Card, Apple Pay or Google Pay, processed by Stripe.</p>';
+  var btn = document.getElementById('stripeBtn');
+  consentListeners.push(function(ok){ btn.setAttribute('aria-disabled', ok ? 'false' : 'true'); });
+  btn.addEventListener('click', function(e){ if (!consentOk()) e.preventDefault(); });
+})();
+
+/* Monthly: PayPal subscription. disable-funding=card,credit stops PayPal
+   injecting its floating menu over the sticky header. */
+(function(){
+  if (!CHECKOUT.paypalPlanId) return;
+  var slot = document.getElementById('pay-monthly');
+  slot.innerHTML = '<div id="paypal-button-container"></div><p class="pay-note">Your licence email goes to your PayPal email address.</p>';
+  var s = document.createElement('script');
+  s.src = 'https://www.paypal.com/sdk/js?client-id=' + encodeURIComponent(CHECKOUT.paypalClientId) + '&vault=true&intent=subscription&currency=EUR&disable-funding=card,credit';
+  s.setAttribute('data-sdk-integration-source', 'button-factory');
+  s.onload = function(){
+    if (!window.paypal) return;
+    paypal.Buttons({
+      fundingSource: paypal.FUNDING.PAYPAL,
+      style: { shape: 'rect', color: 'gold', layout: 'vertical', label: 'subscribe' },
+      onInit: function(data, actions){
+        if (!consent.checked) actions.disable();
+        consentListeners.push(function(ok){ ok ? actions.enable() : actions.disable(); });
+      },
+      onClick: function(){ consentOk(); },
+      createSubscription: function(data, actions){
+        return actions.subscription.create({ plan_id: CHECKOUT.paypalPlanId });
+      },
+      onApprove: function(){ showPaid(); },
+      onError: function(err){ console.error('PayPal:', err); }
+    }).render('#paypal-button-container');
+  };
+  document.body.appendChild(s);
+})();
+</script>
+</body>
+</html>

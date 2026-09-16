@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Licence terms, privacy and risk — Trading Command Center</title>
+<meta name="description" content="Licence terms, privacy policy and risk disclosure for Trading Command Center.">
+<meta name="theme-color" content="#06141F">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%2306141F'/><rect x='9' y='7' width='4' height='18' fill='%2345C29A'/><rect x='19' y='11' width='4' height='14' fill='%23E0A92C'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&family=Spectral:ital,wght@0,300;0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --abyss:#06141F; --abyss-2:#0A2130; --sea:#0F2C42; --chart:#E4EAE8; --panel:#F7F9F8;
+  --ink:#0F2C42; --ink-2:#34506A; --muted:#607487;
+  --rule:rgba(15,44,66,.14); --rule-2:rgba(15,44,66,.3);
+  --drule:rgba(214,230,240,.13); --drule-2:rgba(214,230,240,.26);
+  --dtext:#DCE6EC; --dmuted:#8DA4B4;
+  --brass:#E0A92C; --brass-2:#F0BD48;
+  --up:#1E6B57; --down:#BE3A2B; --sig:#45C29A; --sig-down:#E8715F;
+  --maxw:1200px; --doc:760px;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;scroll-padding-top:84px}
+body{margin:0;background:var(--chart);color:var(--ink);font:400 17.5px/1.68 Spectral,Georgia,serif;font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4,nav,button,label,table,.ui{font-family:Archivo,system-ui,sans-serif}
+a{color:inherit;text-underline-offset:3px;text-decoration-thickness:1px}
+:focus-visible{outline:2px solid var(--brass);outline-offset:3px}
+img,video{max-width:100%;display:block}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px}
+.doc{max-width:var(--doc);margin:0 auto;padding:0 28px}
+.skip{position:absolute;left:-999px;top:0;background:var(--brass);color:#1A1206;padding:8px 14px;font-family:Archivo;z-index:99}
+.skip:focus{left:12px;top:12px}
+code,kbd,.mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-size:.86em}
+code{background:rgba(15,44,66,.07);padding:1.5px 6px;word-break:break-word}
+kbd{background:var(--panel);border:1px solid var(--rule-2);border-bottom-width:2px;padding:1px 6px;font-size:.8em}
+
+/* nav */
+.top{position:sticky;top:0;z-index:50;background:rgba(6,20,31,.92);backdrop-filter:saturate(140%) blur(10px);-webkit-backdrop-filter:saturate(140%) blur(10px);border-bottom:1px solid var(--drule)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;height:62px;gap:20px}
+.brand{display:flex;align-items:center;gap:11px;text-decoration:none;color:#fff;font:700 16px Archivo;font-stretch:122%;letter-spacing:.09em;white-space:nowrap}
+.brand svg{width:27px;height:18px;display:block}
+.brand .prod{font-stretch:100%;letter-spacing:0;font-weight:500;color:var(--dmuted)}
+.top nav{display:flex;align-items:center;gap:24px;font-size:14.5px}
+.top nav a{text-decoration:none;color:var(--dmuted);font-weight:500;white-space:nowrap}
+.top nav a:hover{color:#fff}
+.top nav a.pill{color:#1A1206;background:var(--brass);padding:8px 18px;font-weight:700}
+.top nav a.pill:hover{background:var(--brass-2)}
+
+/* page head */
+.pagehead{position:relative;background:var(--abyss);color:var(--dtext);overflow:hidden;isolation:isolate}
+.pagehead::before{content:"";position:absolute;inset:0;z-index:-1;opacity:.5;
+  background-image:linear-gradient(var(--drule) 1px,transparent 1px),linear-gradient(90deg,var(--drule) 1px,transparent 1px);
+  background-size:64px 64px;background-position:-1px -1px;
+  mask-image:radial-gradient(ellipse 80% 90% at 75% 30%,#000 20%,transparent 75%);
+  -webkit-mask-image:radial-gradient(ellipse 80% 90% at 75% 30%,#000 20%,transparent 75%)}
+.pagehead .doc{padding-top:76px;padding-bottom:70px}
+.where{font:500 14px Archivo;color:var(--dmuted);margin:0 0 22px;display:flex;align-items:center;gap:10px}
+.where i{display:block;width:26px;height:1px;background:var(--brass);flex:none}
+.pagehead h1{margin:0 0 22px;color:#fff;font-weight:800;font-stretch:110%;font-size:clamp(36px,5vw,62px);line-height:1.02;letter-spacing:-.025em}
+.lede{font-size:20px;line-height:1.55;color:#BCCDD8;margin:0;font-weight:300}
+.lede + .lede{margin-top:14px}
+.pagehead .meta{font:500 13.5px/1.6 Archivo;color:var(--dmuted);margin:22px 0 0}
+.pagehead .meta a{color:var(--dtext)}
+
+/* toc strip */
+.toc{background:var(--abyss-2);border-top:1px solid var(--drule);color:var(--dtext)}
+.toc ol{list-style:none;margin:0 auto;padding:14px 28px;max-width:var(--doc);display:flex;flex-wrap:wrap;gap:6px 22px;font:500 14px Archivo;counter-reset:t}
+.toc li{counter-increment:t}
+.toc li::before{content:counter(t);color:var(--brass);font-weight:700;margin-right:7px}
+.toc a{color:var(--dmuted);text-decoration:none}
+.toc a:hover{color:#fff}
+
+/* sections */
+main section{padding:70px 0;border-bottom:1px solid var(--rule)}
+main section:last-child{border-bottom:0}
+main section.panel{background:var(--panel)}
+h2{margin:0 0 18px;font-size:clamp(27px,3.2vw,38px);line-height:1.08;font-weight:800;font-stretch:108%;letter-spacing:-.02em}
+h2 .n{color:var(--brass);font-size:.6em;font-weight:800;margin-right:12px;vertical-align:.2em}
+h3{font-size:19px;line-height:1.3;margin:30px 0 8px;font-weight:700}
+h2 + h3{margin-top:10px}
+p{margin:0 0 16px}
+ul,ol{padding-left:22px;margin:0 0 18px}
+li{margin-bottom:8px}
+.sub{color:var(--ink-2)}
+.hint{font:400 14.5px/1.6 Archivo;color:var(--muted)}
+
+/* numbered steps */
+ol.steps{list-style:none;counter-reset:st;margin:8px 0 0;padding:0}
+ol.steps li{counter-increment:st;position:relative;padding:22px 0 22px 58px;border-top:1px solid var(--rule-2);margin:0;color:var(--ink-2);font-size:16.5px}
+ol.steps li:last-child{border-bottom:1px solid var(--rule-2)}
+ol.steps li::before{content:counter(st);position:absolute;left:0;top:18px;font:800 34px/1 Archivo;font-stretch:108%;color:var(--brass)}
+ol.steps li b,ol.steps li strong:first-child{display:block;font:700 17.5px/1.3 Archivo;color:var(--ink);margin:0 0 5px}
+ol.steps li p{margin:0}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:10px;font:700 16px Archivo;text-decoration:none;padding:15px 26px;border:1px solid transparent;cursor:pointer;transition:background .15s,border-color .15s}
+.btn.brass{background:var(--brass);color:#1A1206}
+.btn.brass:hover{background:var(--brass-2)}
+.btn.ink{background:var(--sea);color:#EEF3F1}
+.btn.ink:hover{background:#17405E}
+.btn.ghost{color:var(--ink);border-color:var(--rule-2);background:transparent}
+.btn.ghost:hover{border-color:var(--ink)}
+.actions{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin-top:26px}
+
+/* form */
+.form{background:var(--panel);border:1px solid var(--rule);padding:28px 28px 24px;margin-top:10px}
+.form label{display:block;font:600 14px Archivo;margin:18px 0 6px;color:var(--ink)}
+.form label:first-child{margin-top:0}
+.form input,.form textarea{width:100%;font:500 16px Archivo;color:var(--ink);background:#fff;border:1px solid var(--rule-2);padding:12px 14px;border-radius:0}
+.form input:focus,.form textarea:focus{outline:2px solid var(--brass);outline-offset:0;border-color:var(--brass)}
+.form textarea{min-height:110px;resize:vertical}
+.form small{display:block;font:400 13px/1.5 Archivo;color:var(--muted);margin-top:6px}
+.warn-text{font:600 14px Archivo;color:var(--down);min-height:1.2em;margin:12px 0 0}
+
+/* notes */
+.note{border-left:3px solid var(--brass);background:var(--panel);padding:16px 20px;margin:24px 0}
+.note p{margin:0}
+.note p + p{margin-top:10px}
+.note b{font-family:Archivo;font-weight:700}
+.note.warn{border-left-color:var(--down)}
+.mailbox{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:baseline;background:var(--abyss);color:var(--dtext);padding:18px 22px;margin:22px 0;font:500 14px Archivo}
+.mailbox a{color:#fff;font:700 18px Archivo;word-break:break-word}
+.mailbox span{color:var(--dmuted)}
+
+/* tables */
+.table-scroll{overflow-x:auto}
+table.data{width:100%;border-collapse:collapse;font-size:14.5px;margin:18px 0}
+table.data th{text-align:left;font-size:12.5px;font-weight:600;color:var(--muted);border-bottom:1px solid var(--rule-2);padding:0 14px 9px 0}
+table.data td{border-bottom:1px solid var(--rule);padding:12px 14px 12px 0;vertical-align:top}
+table.data td:first-child{font-weight:600;white-space:nowrap}
+table.data td code{background:none;padding:0}
+
+/* media */
+figure.demo{margin:26px 0 30px}
+figure.demo .frame{background:var(--abyss);border:1px solid var(--rule-2);aspect-ratio:16/10;display:flex;align-items:center;justify-content:center;overflow:hidden}
+figure.demo video,figure.demo img{width:100%;height:100%;object-fit:contain;background:#fff}
+figure.demo figcaption{font:500 13.5px Archivo;color:var(--muted);margin-top:10px}
+
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:36px}
+.two-col h3{margin-top:0}
+
+/* footer */
+footer{background:var(--abyss);color:var(--dmuted);font:14px/1.6 Archivo;padding:64px 0 50px}
+footer .cols{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:48px;padding-bottom:40px;border-bottom:1px solid var(--drule)}
+footer h4{margin:0 0 14px;color:#fff;font-size:14px;font-weight:600}
+footer ul{list-style:none;margin:0;padding:0}
+footer li{margin:0 0 8px}
+footer a{text-decoration:none;color:var(--dtext)}
+footer a:hover{color:#fff;text-decoration:underline}
+footer .brand{margin-bottom:16px}
+footer .legal{padding-top:26px;font-size:12.5px;color:#6F8797}
+footer .legal p{margin:0 0 10px;max-width:74em}
+footer .legal strong{color:var(--dmuted)}
+
+@media (max-width:760px){
+  body{font-size:16.5px}
+  .wrap,.doc{padding:0 20px}
+  .toc ol{padding:12px 20px}
+  .top nav a:not(.pill){display:none}
+  .brand .prod{display:none}
+  .pagehead .doc{padding-top:54px;padding-bottom:50px}
+  main section{padding:52px 0}
+  .two-col,footer .cols{grid-template-columns:1fr;gap:28px}
+  ol.steps li{padding-left:48px}
+  .form{padding:22px 18px}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="https://wisfli.com/"><svg viewBox="0 0 60 40" aria-hidden="true"><path d="M0 0h60v40H0z" fill="#14528C"/><path d="M8 8h44v24H8z" fill="#fff"/><path d="M18 14h24v12H18z" fill="#C8322A"/></svg>WISFLI <span class="prod">/ Trading Command Center</span></a>
+    <nav aria-label="Page">
+      <a href="#terms">Licence</a>
+      <a href="#privacy">Privacy</a>
+      <a href="#risk">Risk</a>
+      <a class="pill" href="index.html">Back to the product</a>
+    </nav>
+  </div>
+</header>
+
+<div class="pagehead">
+  <div class="doc">
+    <p class="where"><i></i>Legal</p>
+    <h1>Licence terms, privacy and risk</h1>
+    <p class="lede">Written to be read. If anything here does not sit right with you, ask me before you buy.</p>
+    <p class="meta">
+      Trading as: Javier Santiago Gastón de Iriarte Cabrera · Tax ID 47033535F · Ab el Hamet 4, Alicante, Spain ·
+      <a href="mailto:support@wisfli.com">support@wisfli.com</a><br>
+      Last updated: 16 September 2026
+    </p>
+  </div>
+</div>
+
+<main id="main">
+
+<section id="terms">
+  <div class="doc">
+    <h2>Licence terms</h2>
+
+    <h3>What you are buying</h3>
+    <p>A personal, non-transferable licence to use the Trading Command Center Expert Advisor for MetaTrader 5, delivered by email as a compiled <span class="mono">.ex5</span> file together with a licence key. You are not buying the source code or any rights in it.</p>
+
+    <h3>Plans and scope</h3>
+    <ul>
+      <li>Monthly subscription: valid while the subscription is paid. If you cancel, the licence keeps working until the end of the period already paid and then stops.</li>
+      <li>Lifetime licence: no expiry.</li>
+      <li>Both plans: one key can be linked to up to three live accounts and three demo accounts at the same time, with every feature and all updates included.</li>
+      <li>Accounts link automatically the first time the EA runs on them. You can free a linked account from <a href="https://api.wisfli.com/manage">your licence page</a> up to three times in any 30-day period; a demo account unused for 30 days is freed automatically.</li>
+    </ul>
+
+    <h3>How the licence is checked</h3>
+    <p>The EA checks the key with the Wisfli licence server when it starts and every few hours. If the server cannot be reached, the last valid check is trusted for up to 72 hours. Without a valid licence the EA stays loaded but sends no messages and accepts no commands.</p>
+
+    <h3>What you may not do</h3>
+    <ul>
+      <li>Resell, rent, share, redistribute or publish the file or the key.</li>
+      <li>Decompile, disassemble or otherwise attempt to extract the source code or defeat the licensing mechanism.</li>
+      <li>Use the product to manage third-party capital as a service without prior written agreement.</li>
+    </ul>
+    <p>Breaching any of these revokes the licence with no refund.</p>
+
+    <h3>Your responsibility</h3>
+    <p>Chat trading is disabled by default. If you enable it, you are responsible for protecting access to your Telegram account and bot token, for the limits you configure and for every order sent from your chat. The software executes instructions; it does not decide trades.</p>
+
+    <h3>Updates and support</h3>
+    <p>Updates can be downloaded from your licence page and may also be announced by email. Support is provided by email at <a href="mailto:support@wisfli.com">support@wisfli.com</a>, in English or Spanish, and covers installation, licence activation and the operation of the software.</p>
+
+    <h3>Right of withdrawal</h3>
+    <p>This is digital content supplied immediately after payment. Before paying you expressly consent to delivery beginning at once and acknowledge that, once it has been delivered, you lose the right of withdrawal, in accordance with Article 103(m) of the consolidated text of the Spanish General Law for the Defence of Consumers and Users. The monthly plan exists so the product can be tried on your own account with a limited commitment.</p>
+    <p>If the key or the file never reach you, or the software does not work as described and I cannot fix it, you will get a refund.</p>
+
+    <h3>Changes and availability</h3>
+    <p>The licence server is run with reasonable care but without a guarantee of uninterrupted availability.</p>
+
+    <h3>Limitation of liability</h3>
+    <p>The software is supplied as is. To the fullest extent permitted by applicable law, liability is limited to the amount paid for the licence. No liability is accepted for trading losses, orders sent from your chat, broker failures, Telegram or Discord outages, connection or VPS outages, or slippage. Nothing in these terms limits any statutory right you have as a consumer that cannot lawfully be excluded.</p>
+
+    <h3>Governing law</h3>
+    <p>Spanish law applies. For consumers, the competent courts are those of the consumer's place of residence.</p>
+  </div>
+</section>
+
+<section id="privacy" class="panel">
+  <div class="doc">
+    <h2>Privacy</h2>
+
+    <h3>Who is responsible</h3>
+    <p>Javier Santiago Gastón de Iriarte Cabrera (Wisfli), Tax ID 47033535F, Alicante, Spain. Contact: <a href="mailto:support@wisfli.com">support@wisfli.com</a>.</p>
+
+    <h3>What is collected</h3>
+    <ul>
+      <li><strong>At purchase:</strong> your email address and the payment reference sent by Stripe or PayPal. Card and bank details never reach me.</li>
+      <li><strong>When the EA checks the licence:</strong> the licence key, your MT5 account number, the broker server name, whether the account is demo or live, and the time of the check. Your IP address reaches the server as part of any internet connection.</li>
+      <li><strong>Not collected:</strong> your trades, balances, reports, Telegram or Discord tokens and chat content. They stay between your terminal and your own chat.</li>
+    </ul>
+    <p>Licence keys are stored only as a one-way cryptographic hash.</p>
+
+    <h3>Why, and on what legal basis</h3>
+    <p>To deliver and validate the licence you bought, enforce its account limits, provide support and meet Spanish tax obligations (performance of the contract and legal obligation). Your data is not used for advertising and is not sold.</p>
+
+    <h3>Who processes it for me</h3>
+    <p>Stripe and PayPal (payments), Cloudflare (licence server and its database), Resend (sending the licence email) and GitHub Pages (hosting of this website). Some of these providers may process data outside the European Economic Area under the safeguards they offer, such as standard contractual clauses.</p>
+
+    <h3>How long</h3>
+    <p>For as long as the licence exists, and afterwards for the period Spanish tax law requires sales records to be kept. Linked account numbers can be deleted on request once the licence has ended.</p>
+
+    <h3>Your rights</h3>
+    <p>You may request access, rectification, erasure, restriction, objection and portability by writing to <a href="mailto:support@wisfli.com">support@wisfli.com</a>. You may also lodge a complaint with the Spanish Data Protection Agency (AEPD) or your local supervisory authority.</p>
+
+    <h3>Cookies</h3>
+    <p>This site sets no cookies of its own and runs no analytics. Typefaces are loaded from Google Fonts, which receives your IP address when serving them. The PayPal and Stripe checkouts set their own cookies when you use them.</p>
+  </div>
+</section>
+
+<section id="risk">
+  <div class="doc">
+    <h2>Risk disclosure</h2>
+    <p>Trading foreign exchange, metals and leveraged contracts for difference carries a high level of risk and is not suitable for every investor. Leverage magnifies losses as well as gains, and you can lose the entire capital you commit. Never trade money you cannot afford to lose.</p>
+    <p>Trading Command Center is a software tool that reports on an account and executes the instructions of its user. It is not financial advice, an investment recommendation, a signal service or a portfolio management service, and its author is not authorised as an investment firm. Decisions about your capital are yours alone.</p>
+    <p>Reports describe past activity on your account and do not predict future results. Messages depend on third-party services such as Telegram and Discord and can be delayed or lost; do not rely on them as your only risk control. Keep stop losses on the broker's server.</p>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="https://wisfli.com/"><svg viewBox="0 0 60 40" aria-hidden="true"><path d="M0 0h60v40H0z" fill="#14528C"/><path d="M8 8h44v24H8z" fill="#fff"/><path d="M18 14h24v12H18z" fill="#C8322A"/></svg>WISFLI</a>
+        <p style="margin:0;max-width:26em">Trading Command Center is built and supported by one person in Alicante.</p>
+      </div>
+      <div>
+        <h4>Trading Command Center</h4>
+        <ul>
+          <li><a href="index.html">Product page</a></li>
+          <li><a href="https://api.wisfli.com/manage">Your licence page</a></li>
+          <li><a href="terms.html">Licence terms</a></li>
+          <li><a href="terms.html#privacy">Privacy</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Wisfli</h4>
+        <ul>
+          <li><a href="https://wisfli.com/">wisfli.com</a></li>
+          <li><a href="../">All tools</a></li>
+          <li><a href="https://jsgaston.github.io/armada/">Armada signal</a></li>
+          <li><a href="mailto:support@wisfli.com">support@wisfli.com</a></li>
+          <li><a href="mailto:licenses@wisfli.com">licenses@wisfli.com</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="legal">
+      <p><strong>Risk warning.</strong> Trading foreign exchange, metals and leveraged CFDs carries a high level of risk and you can lose the entire capital you commit. Trading Command Center is software, not financial advice, and guarantees no result.</p>
+      <p>© <span class="yr">2026</span> Wisfli. Trading as Javier Santiago Gastón de Iriarte Cabrera, Tax ID 47033535F, Alicante, Spain.</p>
+    </div>
+  </div>
+</footer>
+<script>document.querySelectorAll('.yr').forEach(function(e){e.textContent=new Date().getFullYear();});</script>
+</body>
+</html>
