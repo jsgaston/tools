@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Setup guide — Trading Command Center</title>
+<meta name="description" content="Step-by-step setup for Trading Command Center: install the EA, create your Telegram bot, get your chat ID, add a Discord webhook, activate your licence and understand every input.">
+<link rel="canonical" href="https://jsgaston.github.io/tools/trading-command-center/setup.html">
+<meta name="theme-color" content="#06141F">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%2306141F'/><rect x='9' y='7' width='4' height='18' fill='%2345C29A'/><rect x='19' y='11' width='4' height='14' fill='%23E0A92C'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&family=Spectral:ital,wght@0,300;0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --abyss:#06141F; --abyss-2:#0A2130; --sea:#0F2C42; --chart:#E4EAE8; --panel:#F7F9F8;
+  --ink:#0F2C42; --ink-2:#34506A; --muted:#607487;
+  --rule:rgba(15,44,66,.14); --rule-2:rgba(15,44,66,.3);
+  --drule:rgba(214,230,240,.13); --drule-2:rgba(214,230,240,.26);
+  --dtext:#DCE6EC; --dmuted:#8DA4B4;
+  --brass:#E0A92C; --brass-2:#F0BD48;
+  --up:#1E6B57; --down:#BE3A2B; --sig:#45C29A; --sig-down:#E8715F;
+  --maxw:1200px; --doc:760px;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;scroll-padding-top:84px}
+body{margin:0;background:var(--chart);color:var(--ink);font:400 17.5px/1.68 Spectral,Georgia,serif;font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4,nav,button,label,table,.ui{font-family:Archivo,system-ui,sans-serif}
+a{color:inherit;text-underline-offset:3px;text-decoration-thickness:1px}
+:focus-visible{outline:2px solid var(--brass);outline-offset:3px}
+img,video{max-width:100%;display:block}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px}
+.doc{max-width:var(--doc);margin:0 auto;padding:0 28px}
+.skip{position:absolute;left:-999px;top:0;background:var(--brass);color:#1A1206;padding:8px 14px;font-family:Archivo;z-index:99}
+.skip:focus{left:12px;top:12px}
+code,kbd,.mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-size:.86em}
+code{background:rgba(15,44,66,.07);padding:1.5px 6px;word-break:break-word}
+kbd{background:var(--panel);border:1px solid var(--rule-2);border-bottom-width:2px;padding:1px 6px;font-size:.8em}
+
+/* nav */
+.top{position:sticky;top:0;z-index:50;background:rgba(6,20,31,.92);backdrop-filter:saturate(140%) blur(10px);-webkit-backdrop-filter:saturate(140%) blur(10px);border-bottom:1px solid var(--drule)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;height:62px;gap:20px}
+.brand{display:flex;align-items:center;gap:11px;text-decoration:none;color:#fff;font:700 16px Archivo;font-stretch:122%;letter-spacing:.09em;white-space:nowrap}
+.brand svg{width:27px;height:18px;display:block}
+.brand .prod{font-stretch:100%;letter-spacing:0;font-weight:500;color:var(--dmuted)}
+.top nav{display:flex;align-items:center;gap:24px;font-size:14.5px}
+.top nav a{text-decoration:none;color:var(--dmuted);font-weight:500;white-space:nowrap}
+.top nav a:hover{color:#fff}
+.top nav a.pill{color:#1A1206;background:var(--brass);padding:8px 18px;font-weight:700}
+.top nav a.pill:hover{background:var(--brass-2)}
+
+/* page head */
+.pagehead{position:relative;background:var(--abyss);color:var(--dtext);overflow:hidden;isolation:isolate}
+.pagehead::before{content:"";position:absolute;inset:0;z-index:-1;opacity:.5;
+  background-image:linear-gradient(var(--drule) 1px,transparent 1px),linear-gradient(90deg,var(--drule) 1px,transparent 1px);
+  background-size:64px 64px;background-position:-1px -1px;
+  mask-image:radial-gradient(ellipse 80% 90% at 75% 30%,#000 20%,transparent 75%);
+  -webkit-mask-image:radial-gradient(ellipse 80% 90% at 75% 30%,#000 20%,transparent 75%)}
+.pagehead .doc{padding-top:76px;padding-bottom:70px}
+.where{font:500 14px Archivo;color:var(--dmuted);margin:0 0 22px;display:flex;align-items:center;gap:10px}
+.where i{display:block;width:26px;height:1px;background:var(--brass);flex:none}
+.pagehead h1{margin:0 0 22px;color:#fff;font-weight:800;font-stretch:110%;font-size:clamp(36px,5vw,62px);line-height:1.02;letter-spacing:-.025em}
+.lede{font-size:20px;line-height:1.55;color:#BCCDD8;margin:0;font-weight:300}
+.lede + .lede{margin-top:14px}
+.pagehead .meta{font:500 13.5px/1.6 Archivo;color:var(--dmuted);margin:22px 0 0}
+.pagehead .meta a{color:var(--dtext)}
+
+/* toc strip */
+.toc{background:var(--abyss-2);border-top:1px solid var(--drule);color:var(--dtext)}
+.toc ol{list-style:none;margin:0 auto;padding:14px 28px;max-width:var(--doc);display:flex;flex-wrap:wrap;gap:6px 22px;font:500 14px Archivo;counter-reset:t}
+.toc li{counter-increment:t}
+.toc li::before{content:counter(t);color:var(--brass);font-weight:700;margin-right:7px}
+.toc a{color:var(--dmuted);text-decoration:none}
+.toc a:hover{color:#fff}
+
+/* sections */
+main section{padding:70px 0;border-bottom:1px solid var(--rule)}
+main section:last-child{border-bottom:0}
+main section.panel{background:var(--panel)}
+h2{margin:0 0 18px;font-size:clamp(27px,3.2vw,38px);line-height:1.08;font-weight:800;font-stretch:108%;letter-spacing:-.02em}
+h2 .n{color:var(--brass);font-size:.6em;font-weight:800;margin-right:12px;vertical-align:.2em}
+h3{font-size:19px;line-height:1.3;margin:30px 0 8px;font-weight:700}
+h2 + h3{margin-top:10px}
+p{margin:0 0 16px}
+ul,ol{padding-left:22px;margin:0 0 18px}
+li{margin-bottom:8px}
+.sub{color:var(--ink-2)}
+.hint{font:400 14.5px/1.6 Archivo;color:var(--muted)}
+
+/* numbered steps */
+ol.steps{list-style:none;counter-reset:st;margin:8px 0 0;padding:0}
+ol.steps li{counter-increment:st;position:relative;padding:22px 0 22px 58px;border-top:1px solid var(--rule-2);margin:0;color:var(--ink-2);font-size:16.5px}
+ol.steps li:last-child{border-bottom:1px solid var(--rule-2)}
+ol.steps li::before{content:counter(st);position:absolute;left:0;top:18px;font:800 34px/1 Archivo;font-stretch:108%;color:var(--brass)}
+ol.steps li b,ol.steps li strong:first-child{display:block;font:700 17.5px/1.3 Archivo;color:var(--ink);margin:0 0 5px}
+ol.steps li p{margin:0}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:10px;font:700 16px Archivo;text-decoration:none;padding:15px 26px;border:1px solid transparent;cursor:pointer;transition:background .15s,border-color .15s}
+.btn.brass{background:var(--brass);color:#1A1206}
+.btn.brass:hover{background:var(--brass-2)}
+.btn.ink{background:var(--sea);color:#EEF3F1}
+.btn.ink:hover{background:#17405E}
+.btn.ghost{color:var(--ink);border-color:var(--rule-2);background:transparent}
+.btn.ghost:hover{border-color:var(--ink)}
+.actions{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin-top:26px}
+
+/* form */
+.form{background:var(--panel);border:1px solid var(--rule);padding:28px 28px 24px;margin-top:10px}
+.form label{display:block;font:600 14px Archivo;margin:18px 0 6px;color:var(--ink)}
+.form label:first-child{margin-top:0}
+.form input,.form textarea{width:100%;font:500 16px Archivo;color:var(--ink);background:#fff;border:1px solid var(--rule-2);padding:12px 14px;border-radius:0}
+.form input:focus,.form textarea:focus{outline:2px solid var(--brass);outline-offset:0;border-color:var(--brass)}
+.form textarea{min-height:110px;resize:vertical}
+.form small{display:block;font:400 13px/1.5 Archivo;color:var(--muted);margin-top:6px}
+.warn-text{font:600 14px Archivo;color:var(--down);min-height:1.2em;margin:12px 0 0}
+
+/* notes */
+.note{border-left:3px solid var(--brass);background:var(--panel);padding:16px 20px;margin:24px 0}
+.note p{margin:0}
+.note p + p{margin-top:10px}
+.note b{font-family:Archivo;font-weight:700}
+.note.warn{border-left-color:var(--down)}
+.mailbox{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:baseline;background:var(--abyss);color:var(--dtext);padding:18px 22px;margin:22px 0;font:500 14px Archivo}
+.mailbox a{color:#fff;font:700 18px Archivo;word-break:break-word}
+.mailbox span{color:var(--dmuted)}
+
+/* tables */
+.table-scroll{overflow-x:auto}
+table.data{width:100%;border-collapse:collapse;font-size:14.5px;margin:18px 0}
+table.data th{text-align:left;font-size:12.5px;font-weight:600;color:var(--muted);border-bottom:1px solid var(--rule-2);padding:0 14px 9px 0}
+table.data td{border-bottom:1px solid var(--rule);padding:12px 14px 12px 0;vertical-align:top}
+table.data td:first-child{font-weight:600;white-space:nowrap}
+table.data td code{background:none;padding:0}
+
+/* media */
+figure.demo{margin:26px 0 30px}
+figure.demo .frame{background:var(--abyss);border:1px solid var(--rule-2);aspect-ratio:16/10;display:flex;align-items:center;justify-content:center;overflow:hidden}
+figure.demo video,figure.demo img{width:100%;height:100%;object-fit:contain;background:#fff}
+figure.demo figcaption{font:500 13.5px Archivo;color:var(--muted);margin-top:10px}
+
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:36px}
+.two-col h3{margin-top:0}
+
+/* footer */
+footer{background:var(--abyss);color:var(--dmuted);font:14px/1.6 Archivo;padding:64px 0 50px}
+footer .cols{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:48px;padding-bottom:40px;border-bottom:1px solid var(--drule)}
+footer h4{margin:0 0 14px;color:#fff;font-size:14px;font-weight:600}
+footer ul{list-style:none;margin:0;padding:0}
+footer li{margin:0 0 8px}
+footer a{text-decoration:none;color:var(--dtext)}
+footer a:hover{color:#fff;text-decoration:underline}
+footer .brand{margin-bottom:16px}
+footer .legal{padding-top:26px;font-size:12.5px;color:#6F8797}
+footer .legal p{margin:0 0 10px;max-width:74em}
+footer .legal strong{color:var(--dmuted)}
+
+@media (max-width:760px){
+  body{font-size:16.5px}
+  .wrap,.doc{padding:0 20px}
+  .toc ol{padding:12px 20px}
+  .top nav a:not(.pill){display:none}
+  .brand .prod{display:none}
+  .pagehead .doc{padding-top:54px;padding-bottom:50px}
+  main section{padding:52px 0}
+  .two-col,footer .cols{grid-template-columns:1fr;gap:28px}
+  ol.steps li{padding-left:48px}
+  .form{padding:22px 18px}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+.stepnum{display:inline-block;background:var(--brass);color:var(--abyss);font:800 13px Archivo;padding:2px 9px;border-radius:99px;margin-right:8px;vertical-align:2px}
+.note{background:var(--panel);border-left:3px solid var(--brass);padding:16px 20px;margin:22px 0}
+.note p{margin:0}
+.note.warn{border-left-color:var(--down)}
+.doc table code{white-space:nowrap}
+.doc .mono,.doc code{overflow-wrap:anywhere}
+.toc{background:var(--panel);padding:22px 26px;margin:0 0 34px}
+.toc ol{margin:0;padding-left:20px;columns:2;column-gap:36px}
+.toc li{margin:0 0 6px;break-inside:avoid}
+@media (max-width:700px){ .toc ol{columns:1} }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="https://wisfli.com/"><svg viewBox="0 0 60 40" aria-hidden="true"><path d="M0 0h60v40H0z" fill="#14528C"/><path d="M8 8h44v24H8z" fill="#fff"/><path d="M18 14h24v12H18z" fill="#C8322A"/></svg>WISFLI <span class="prod">/ Trading Command Center</span></a>
+    <nav aria-label="Page">
+      <a href="#install">Install</a>
+      <a href="#telegram">Telegram</a>
+      <a href="#inputs">Inputs</a>
+      <a href="#trouble">Problems</a>
+      <a class="pill" href="index.html">Product page</a>
+    </nav>
+  </div>
+</header>
+
+<div class="pagehead">
+  <div class="doc">
+    <p class="where"><i></i>Setup guide</p>
+    <h1>From the email to your first alert</h1>
+    <p class="lede">About ten minutes, and most of it is creating your Telegram bot. Nothing here needs programming.</p>
+    <p class="meta">Trading Command Center 6.10 · MetaTrader 5 · <a href="mailto:support@wisfli.com">support@wisfli.com</a></p>
+  </div>
+</div>
+
+<main id="main">
+
+<section>
+  <div class="doc">
+    <div class="toc">
+      <ol>
+        <li><a href="#need">What you need</a></li>
+        <li><a href="#install">Install the file</a></li>
+        <li><a href="#urls">Allow three web addresses</a></li>
+        <li><a href="#telegram">Create your Telegram bot</a></li>
+        <li><a href="#chatid">Find your chat ID</a></li>
+        <li><a href="#discord">Discord (optional)</a></li>
+        <li><a href="#start">Start it and activate your licence</a></li>
+        <li><a href="#use">Daily use</a></li>
+        <li><a href="#trading">Trading from the chat</a></li>
+        <li><a href="#inputs">Every input explained</a></li>
+        <li><a href="#licence">Accounts, updates and cancelling</a></li>
+        <li><a href="#trouble">If something does not work</a></li>
+      </ol>
+    </div>
+
+    <h2 id="need"><span class="stepnum">0</span>What you need</h2>
+    <ul>
+      <li><strong>MetaTrader 5</strong> installed on a Windows PC or a VPS, and left open. If the terminal is closed, nothing is sent.</li>
+      <li><strong>Your licence email</strong> from licenses@wisfli.com, with the key and the <span class="mono">.ex5</span> file attached.</li>
+      <li><strong>A Telegram account</strong>, or a Discord server where you can create a webhook. You can use both.</li>
+    </ul>
+    <p>One copy on one chart watches the whole account. You do not need one per symbol or per EA.</p>
+
+    <h2 id="install"><span class="stepnum">1</span>Install the file</h2>
+    <ol>
+      <li>Save <span class="mono">TradingCommandCenter.ex5</span> from your email to your computer. If your email provider strips the attachment, use the download button in the same email.</li>
+      <li>In MetaTrader 5: <strong>File &gt; Open Data Folder</strong>.</li>
+      <li>Open <span class="mono">MQL5</span>, then <span class="mono">Experts</span>, and copy the file there.</li>
+      <li>Back in MT5, right-click anywhere in the <strong>Navigator</strong> panel (Ctrl+N) and choose <strong>Refresh</strong>. Trading Command Center now appears under Expert Advisors.</li>
+    </ol>
+
+    <h2 id="urls"><span class="stepnum">2</span>Allow three web addresses</h2>
+    <p>MetaTrader blocks internet access unless you list the addresses yourself.</p>
+    <ol>
+      <li><strong>Tools &gt; Options &gt; Expert Advisors</strong>.</li>
+      <li>Tick <strong>Allow WebRequest for listed URL</strong>.</li>
+      <li>Add these three, one per line:
+        <ul>
+          <li><span class="mono">https://api.telegram.org</span></li>
+          <li><span class="mono">https://discord.com</span></li>
+          <li><span class="mono">https://api.wisfli.com</span></li>
+        </ul>
+      </li>
+      <li><strong>OK</strong>.</li>
+    </ol>
+    <div class="note"><p><span class="mono">api.wisfli.com</span> is needed even if you only use Discord: it is where the licence is checked. Do not add <span class="mono">discordapp.com</span>: it is the old address and MetaTrader does not follow its redirect.</p></div>
+
+    <h2 id="telegram"><span class="stepnum">3</span>Create your Telegram bot</h2>
+    <p>The bot is yours. Its token stays in your terminal and is never sent to Wisfli.</p>
+    <ol>
+      <li>In Telegram, search for <strong>@BotFather</strong> (the one with the blue check) and open the chat.</li>
+      <li>Send <span class="mono">/newbot</span>.</li>
+      <li>Give it a display name, for example <em>My MT5 alerts</em>.</li>
+      <li>Give it a username ending in <span class="mono">bot</span>, for example <span class="mono">javier_mt5_alerts_bot</span>. If it is taken, try another.</li>
+      <li>BotFather replies with a <strong>token</strong> that looks like <span class="mono">1234567890:AAF...</span>. Copy it and keep it private: anyone with it can use your bot.</li>
+      <li><strong>Open a chat with your new bot and send it any message</strong>, for example "hello". Telegram will not let a bot write to you first.</li>
+    </ol>
+
+    <h2 id="chatid"><span class="stepnum">4</span>Find your chat ID</h2>
+    <p>The chat ID says where the messages go. Pick one of the two ways.</p>
+    <h3>Easy way</h3>
+    <p>In Telegram, search for <strong>@userinfobot</strong>, open it and press start. It replies with your <strong>Id</strong>: a number like <span class="mono">123456789</span>. That is your chat ID for a private chat with your bot.</p>
+    <h3>Way that also works for groups</h3>
+    <ol>
+      <li>If you want the alerts in a group, create it, add your bot as a member and write any message there.</li>
+      <li>In your browser open this address, replacing <span class="mono">TOKEN</span> with your bot token:<br>
+        <span class="mono">https://api.telegram.org/botTOKEN/getUpdates</span></li>
+      <li>Look for <span class="mono">"chat":{"id":</span> in the text. That number is your chat ID. For groups it starts with a minus sign, for example <span class="mono">-1001234567890</span>, and the minus is part of the ID.</li>
+    </ol>
+
+    <h2 id="discord"><span class="stepnum">5</span>Discord (optional)</h2>
+    <ol>
+      <li>In your Discord server, open the channel settings (the cog next to the channel name).</li>
+      <li><strong>Integrations &gt; Webhooks &gt; New Webhook</strong>.</li>
+      <li>Give it a name and press <strong>Copy Webhook URL</strong>.</li>
+      <li>It must start with <span class="mono">https://discord.com/api/webhooks/</span>. If it starts with <span class="mono">discordapp.com</span>, change that part by hand.</li>
+    </ol>
+    <p>Discord receives alerts and reports. Buttons and commands are Telegram only, because Discord webhooks cannot send them.</p>
+
+    <h2 id="start"><span class="stepnum">6</span>Start it and activate your licence</h2>
+    <ol>
+      <li>Open any chart on the account you want to watch. The symbol does not matter, though the on-demand screenshot will be of that chart.</li>
+      <li>Check that the <strong>Algo Trading</strong> button in the toolbar is green.</li>
+      <li>Drag <strong>TradingCommandCenter</strong> from the Navigator onto the chart.</li>
+      <li>In the <strong>Common</strong> tab, tick <strong>Allow Algo Trading</strong>.</li>
+      <li>In <strong>Inputs</strong>, fill in:
+        <ul>
+          <li><span class="mono">InpLicenseKey</span>: your key, <span class="mono">WSF-XXXXX-XXXXX-XXXXX-XXXXX</span></li>
+          <li><span class="mono">InpTelegramToken</span> and <span class="mono">InpTelegramChatID</span>, and/or <span class="mono">InpDiscordWebhook</span></li>
+        </ul>
+      </li>
+      <li><strong>OK</strong>.</li>
+    </ol>
+    <p>Within seconds you get a start message with your balance and the button menu. The account is now linked to your licence automatically.</p>
+    <div class="note"><p>Without a valid key the EA stays on the chart, writes the reason in the top left corner and sends nothing. Without any channel configured it removes itself, because there would be nowhere to write.</p></div>
+
+    <h2 id="use"><span class="stepnum">7</span>Daily use</h2>
+    <p>Alerts arrive on their own. For everything else, use the buttons or type a command. English and Spanish forms both work.</p>
+    <div class="table-scroll">
+      <table class="data">
+        <thead><tr><th scope="col">Command</th><th scope="col">What it does</th></tr></thead>
+        <tbody>
+          <tr><td><code>/menu</code></td><td>Main menu with buttons</td></tr>
+          <tr><td><code>/dashboard</code></td><td>Balance, equity, floating P/L, margin</td></tr>
+          <tr><td><code>/today</code> <code>/week</code> <code>/15</code> <code>/month</code> <code>/thismonth</code> <code>/all</code></td><td>Account report for that period</td></tr>
+          <tr><td><code>/summary 2026-01-01 2026-03-31</code></td><td>Report between two dates</td></tr>
+          <tr><td><code>/bots</code> · <code>/bot 88881</code></td><td>Ranking of your bots, or one bot in detail</td></tr>
+          <tr><td><code>/photo</code></td><td>Screenshot of the chart the EA runs on</td></tr>
+          <tr><td><code>/risk</code> · <code>/health</code></td><td>Risk limits and EA status</td></tr>
+          <tr><td><code>/lang</code></td><td>Change language (en, es, pt, fr, de, ru, zh)</td></tr>
+          <tr><td><code>/stop</code> · <code>/resume</code></td><td>Kill-switch on and off</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>To separate your EAs in the reports, give each one its own magic number and list them in <span class="mono">InpReportMagics</span>. They then appear as buttons under 🤖 Bots.</p>
+
+    <h2 id="trading"><span class="stepnum">8</span>Trading from the chat</h2>
+    <p>Disabled by default. Turn it on by setting <span class="mono">InpEnableTrading</span> to <span class="mono">true</span>, and only if you understand that anyone with access to your Telegram account could then send orders.</p>
+    <div class="table-scroll">
+      <table class="data">
+        <thead><tr><th scope="col">Command</th><th scope="col">What it does</th></tr></thead>
+        <tbody>
+          <tr><td><code>/buy EURUSD 0.10</code></td><td>Market buy. Optional: <code>/buy EURUSD 0.10 SL TP</code>, as prices</td></tr>
+          <tr><td><code>/sell XAUUSD 0.05 3380 3320</code></td><td>Market sell with stop loss and take profit</td></tr>
+          <tr><td><code>/sltp TICKET SL TP</code></td><td>Change both levels. <code>0</code> removes one, <code>=</code> keeps it</td></tr>
+          <tr><td><code>/sl TICKET PRICE</code> · <code>/tp TICKET PRICE</code></td><td>Change one level</td></tr>
+          <tr><td><code>/close TICKET</code> · <code>/closeall</code></td><td>Close one position, or all of them</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Orders and close-all always ask for confirmation, and the request expires after two minutes. Keep <span class="mono">InpRestrictToChatID</span> on <span class="mono">true</span> so only your chat is obeyed, and set <span class="mono">InpMaxLot</span> to something you would never exceed by accident.</p>
+
+    <h2 id="inputs"><span class="stepnum">9</span>Every input explained</h2>
+    <div class="table-scroll">
+      <table class="data">
+        <thead><tr><th scope="col">Input</th><th scope="col">Default</th><th scope="col">What it does</th></tr></thead>
+        <tbody>
+          <tr><td><code>InpLicenseKey</code></td><td>empty</td><td>Your licence key. Not needed in the Strategy Tester</td></tr>
+          <tr><td><code>InpLanguage</code></td><td>Auto</td><td>Message language. Auto follows the terminal, English if it is not one of the seven</td></tr>
+          <tr><td><code>InpSendTestOnStart</code></td><td>true</td><td>Sends the start message, so you know it is alive</td></tr>
+          <tr><td><code>InpSendChartScreenshots</code></td><td>true</td><td>Attaches a chart image when the trade is on the chart's symbol</td></tr>
+          <tr><td><code>InpEnablePeriodicReport</code></td><td>true</td><td>Account summary while positions or orders are open</td></tr>
+          <tr><td><code>InpReportIntervalMinutes</code></td><td>15</td><td>How often that summary is sent</td></tr>
+          <tr><td><code>InpEnableDailyReport</code></td><td>true</td><td>One balance message a day when there is no activity</td></tr>
+          <tr><td><code>InpDailyBalanceHour</code></td><td>9</td><td>Hour for that message, in your broker's server time</td></tr>
+          <tr><td><code>InpNotifyTradeEvents</code></td><td>true</td><td>Entry and exit alerts in real time</td></tr>
+          <tr><td><code>InpNotifyPendingOrders</code></td><td>true</td><td>Alerts when a pending order is placed</td></tr>
+          <tr><td><code>InpEnableButtons</code></td><td>true</td><td>Buttons and commands in Telegram</td></tr>
+          <tr><td><code>InpButtonCheckSeconds</code></td><td>3</td><td>How often Telegram is polled for your taps</td></tr>
+          <tr><td><code>InpTelegramToken</code></td><td>empty</td><td>Token from @BotFather</td></tr>
+          <tr><td><code>InpTelegramChatID</code></td><td>empty</td><td>Your chat or group ID</td></tr>
+          <tr><td><code>InpDiscordWebhook</code></td><td>empty</td><td>Discord webhook URL</td></tr>
+          <tr><td><code>InpFilterSymbols</code></td><td>empty</td><td>Only report these symbols, comma separated. Empty means all. Broker suffixes are matched</td></tr>
+          <tr><td><code>InpFilterMagicNumbers</code></td><td>empty</td><td>Only report these magic numbers. Empty means all</td></tr>
+          <tr><td><code>InpReportMagics</code></td><td>88881,…</td><td>Magic numbers shown as bot buttons in the reports menu</td></tr>
+          <tr><td><code>InpEnableTrading</code></td><td>false</td><td>Allows opening, closing and modifying from the chat</td></tr>
+          <tr><td><code>InpConfirmTrades</code></td><td>true</td><td>Asks before executing. Leave it on</td></tr>
+          <tr><td><code>InpManualMagic</code></td><td>0</td><td>Magic number stamped on orders sent from the chat</td></tr>
+          <tr><td><code>InpDefaultLot</code></td><td>0.01</td><td>Lot used when you do not type one</td></tr>
+          <tr><td><code>InpMaxLot</code></td><td>1.0</td><td>Hard cap: a bigger lot is refused</td></tr>
+          <tr><td><code>InpAllowOpenSymbols</code></td><td>empty</td><td>Only these symbols may be opened from the chat</td></tr>
+          <tr><td><code>InpMaxOpenPositions</code></td><td>20</td><td>Refuses new chat orders above this count. 0 disables the check</td></tr>
+          <tr><td><code>InpMaxDailyLossMoney</code></td><td>0</td><td>Blocks new chat orders after this much closed loss today. 0 disables it</td></tr>
+          <tr><td><code>InpMaxRiskPercent</code></td><td>0</td><td>Refuses an order whose stop would risk more than this % of equity. 0 disables it</td></tr>
+          <tr><td><code>InpMaxSpreadPoints</code></td><td>0</td><td>Refuses chat orders when the spread is wider than this. 0 disables it</td></tr>
+          <tr><td><code>InpRestrictToChatID</code></td><td>true</td><td>Ignores commands from any other chat. Keep it on</td></tr>
+          <tr><td><code>InpEnableRiskGuard</code></td><td>true</td><td>Master switch for the four limits above</td></tr>
+          <tr><td><code>InpHeartbeatEnabled</code></td><td>true</td><td>Periodic "still alive" message</td></tr>
+          <tr><td><code>InpHeartbeatMinutes</code></td><td>60</td><td>How often the heartbeat is sent</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 id="licence"><span class="stepnum">10</span>Accounts, updates and cancelling</h2>
+    <p>Your key works on <strong>3 live and 3 demo accounts</strong> at the same time. Accounts link themselves the first time the EA runs on them.</p>
+    <ul>
+      <li><strong>Change accounts:</strong> go to <a href="https://api.wisfli.com/manage">your licence page</a>, enter your key and the email you bought with, and free the account you no longer use. Up to three changes every 30 days. Demo accounts unused for 30 days are freed automatically.</li>
+      <li><strong>Updates:</strong> download the newest file from that same page and replace the old one in <span class="mono">MQL5\Experts</span>. Your key and settings stay the same.</li>
+      <li><strong>Monthly plan:</strong> cancel from the subscription link in your licence email, or from <a href="index.html#faq">the link on the product page</a>. It keeps working until the end of the month you already paid.</li>
+      <li><strong>Lost your key?</strong> Write to <a href="mailto:support@wisfli.com">support@wisfli.com</a> from the email you bought with and a new key is issued.</li>
+    </ul>
+
+    <h2 id="trouble"><span class="stepnum">11</span>If something does not work</h2>
+    <p>Look at the <strong>Experts</strong> tab at the bottom of MetaTrader: the EA writes the reason there in plain English.</p>
+    <div class="table-scroll">
+      <table class="data">
+        <thead><tr><th scope="col">What you see</th><th scope="col">What to do</th></tr></thead>
+        <tbody>
+          <tr><td>"Enter your license key in the EA inputs"</td><td>The key field is empty. Paste the key from your email</td></tr>
+          <tr><td>"Invalid license key"</td><td>Check for a missing character. The key has the form WSF-XXXXX-XXXXX-XXXXX-XXXXX</td></tr>
+          <tr><td>"Account limit reached"</td><td>You are using more accounts than your licence allows. Free one on your licence page</td></tr>
+          <tr><td>"Cannot verify the license (no connection)"</td><td>The terminal cannot reach api.wisfli.com. Check the URL list, your firewall or your VPS connection. A previous valid check keeps it working for up to 72 hours</td></tr>
+          <tr><td>"Allow WebRequest for https://api.wisfli.com"</td><td>Step 2 of this guide is missing or misspelled</td></tr>
+          <tr><td>Error 4060, or nothing arrives in Telegram</td><td>api.telegram.org is not in the allowed list, or the token or chat ID is wrong. Remember to write to your bot first</td></tr>
+          <tr><td>The EA removes itself from the chart</td><td>No channel configured. Fill in the Telegram token and chat ID, or the Discord webhook</td></tr>
+          <tr><td>Telegram works, Discord is silent</td><td>Check the webhook URL starts with discord.com, and that discord.com is in the allowed list. Discord gets alerts and reports, not menus</td></tr>
+          <tr><td>No screenshots</td><td>Images are attached only when the trade is on the same symbol as the chart. <code>/photo</code> always sends one</td></tr>
+          <tr><td>The licence email never arrived</td><td>Check spam. If it is not there, write to support@wisfli.com with the email you paid with</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note warn"><p>Trading involves a high risk of losing money. This tool reports on your account and executes what you tell it to; it does not decide trades and guarantees no result. Keep your stop losses on the broker's server, not only in a chat.</p></div>
+
+    <h2>Still stuck?</h2>
+    <p>Write to <a href="mailto:support@wisfli.com">support@wisfli.com</a> with a screenshot of the <strong>Experts</strong> tab. The answer comes from the person who wrote the software.</p>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="https://wisfli.com/"><svg viewBox="0 0 60 40" aria-hidden="true"><path d="M0 0h60v40H0z" fill="#14528C"/><path d="M8 8h44v24H8z" fill="#fff"/><path d="M18 14h24v12H18z" fill="#C8322A"/></svg>WISFLI</a>
+        <p style="margin:0;max-width:26em">Trading Command Center is built and supported by one person in Alicante.</p>
+      </div>
+      <div>
+        <h4>Trading Command Center</h4>
+        <ul>
+          <li><a href="index.html">Product page</a></li>
+          <li><a href="setup.html">Setup guide</a></li>
+          <li><a href="https://api.wisfli.com/manage">Your licence page</a></li>
+          <li><a href="terms.html">Licence terms</a></li>
+          <li><a href="terms.html#privacy">Privacy</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Wisfli</h4>
+        <ul>
+          <li><a href="https://wisfli.com/">wisfli.com</a></li>
+          <li><a href="../">All tools</a></li>
+          <li><a href="https://jsgaston.github.io/armada/">Armada signal</a></li>
+          <li><a href="mailto:support@wisfli.com">support@wisfli.com</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="legal">
+      <p><strong>Risk warning.</strong> Trading foreign exchange, metals and leveraged CFDs carries a high level of risk and you can lose the entire capital you commit. Trading Command Center is software, not financial advice, and guarantees no result.</p>
+      <p>© <span class="yr">2026</span> Wisfli. Trading as Javier Santiago Gastón de Iriarte Cabrera, Tax ID 47033535F, Alicante, Spain.</p>
+    </div>
+  </div>
+</footer>
+<script>document.querySelectorAll('.yr').forEach(function(e){e.textContent=new Date().getFullYear();});</script>
+</body>
+</html>

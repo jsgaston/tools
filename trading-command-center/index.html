@@ -348,6 +348,7 @@ table.cmds code{background:rgba(15,44,66,.07);padding:1px 6px}
       <a href="#reports">Reports</a>
       <a href="#control">Control</a>
       <a href="#safety" class="opt">Safety</a>
+      <a href="setup.html" class="opt">Setup</a>
       <a href="#faq" class="opt">FAQ</a>
       <a class="pill" href="#pricing">Buy</a>
     </nav>
@@ -574,7 +575,7 @@ Max DD €41.30 · NET <span class="dn">−€6.10</span><time>18:02</time></div
         <h3>Monthly subscription</h3>
         <p class="who">Pay while you use it. The easiest way to try it on your own account.</p>
         <p class="price"><span data-price="monthly">€19</span> <em>/ month</em></p>
-        <p class="was">VAT included, cancel any time in PayPal</p>
+        <p class="was">VAT included, cancel any time</p>
         <ul>
           <li>3 live and 3 demo accounts</li>
           <li>Every feature and all updates</li>
@@ -600,7 +601,7 @@ Max DD €41.30 · NET <span class="dn">−€6.10</span><time>18:02</time></div
       </div>
     </div>
 
-    <p class="hint">The licence key is sent from licenses@wisfli.com to the email of the account you pay with (for PayPal, your PayPal email). If it is not in your inbox after a few minutes, check the spam or junk folder. You can see and free linked accounts at any time on <a href="https://api.wisfli.com/manage">your licence page</a>.</p>
+    <p class="hint">The licence key is sent from licenses@wisfli.com to the email you enter at checkout. If it is not in your inbox after a few minutes, check the spam or junk folder. You can see and free linked accounts at any time on <a href="https://api.wisfli.com/manage">your licence page</a>.</p>
   </div>
 </section>
 
@@ -611,13 +612,14 @@ Max DD €41.30 · NET <span class="dn">−€6.10</span><time>18:02</time></div
       <p>About ten minutes, most of it creating the Telegram bot.</p>
     </div>
     <ol class="steps">
-      <li><strong>Pay</strong><p>Monthly with PayPal or once with card through Stripe.</p></li>
+      <li><strong>Pay</strong><p>Monthly or once, by card, Apple Pay or Google Pay through Stripe.</p></li>
       <li><strong>Check your email</strong><p>From licenses@wisfli.com: your key in the form <span class="mono">WSF-XXXXX-XXXXX-XXXXX-XXXXX</span>, the file attached and a private download link.</p></li>
       <li><strong>Create your Telegram bot</strong><p>With @BotFather, in two minutes. You keep the token; it never leaves your terminal.</p></li>
       <li><strong>Allow three web addresses</strong><p>In MT5, Tools, Options, Expert Advisors: api.telegram.org, discord.com and api.wisfli.com.</p></li>
       <li><strong>Attach it to one chart</strong><p>Paste the licence key, the bot token and your chat ID. A start message confirms it is running.</p></li>
       <li><strong>Change accounts yourself</strong><p>The first accounts link on their own. Free one from your licence page whenever you move brokers.</p></li>
     </ol>
+    <p class="hint" style="margin-top:26px"><a class="btn line" href="setup.html">Read the full setup guide</a></p>
   </div>
 </section>
 
@@ -627,7 +629,7 @@ Max DD €41.30 · NET <span class="dn">−€6.10</span><time>18:02</time></div
     <div class="faq-list">
       <details>
         <summary>Is there a free trial?</summary>
-        <p>No. MetaTrader 5 blocks internet requests inside the Strategy Tester, so a tool that talks to Telegram cannot be shown there, and there is no demo licence. The monthly plan is the way to try it: one month, cancel in PayPal, and it stops at the end of the paid period. This page and the command list show exactly what you get.</p>
+        <p>No. MetaTrader 5 blocks internet requests inside the Strategy Tester, so a tool that talks to Telegram cannot be shown there, and there is no demo licence. The monthly plan is the way to try it: one month, cancel from your subscription page, and it stops at the end of the paid period. This page and the command list show exactly what you get.</p>
       </details>
       <details>
         <summary>Does it work with EAs from other developers?</summary>
@@ -655,7 +657,7 @@ Max DD €41.30 · NET <span class="dn">−€6.10</span><time>18:02</time></div
       </details>
       <details>
         <summary>How do I cancel the subscription?</summary>
-        <p>In your PayPal account, under automatic payments. The EA keeps working until the end of the month you already paid and then stops on its own. Nothing else to do.</p>
+        <p>From the <span id="portalText">subscription link in your licence email</span>, with the email you paid with. The EA keeps working until the end of the month you already paid and then stops on its own. Nothing else to do.</p>
       </details>
     </div>
   </div>
@@ -684,6 +686,7 @@ Max DD €41.30 · NET <span class="dn">−€6.10</span><time>18:02</time></div
         <h4>Trading Command Center</h4>
         <ul>
           <li><a href="https://api.wisfli.com/manage">Your licence page</a></li>
+          <li><a href="setup.html">Setup guide</a></li>
           <li><a href="terms.html">Licence terms</a></li>
           <li><a href="terms.html#privacy">Privacy</a></li>
           <li><a href="../">All tools</a></li>
@@ -713,10 +716,14 @@ Max DD €41.30 · NET <span class="dn">−€6.10</span><time>18:02</time></div
    Edit here. Leave a value empty and its button shows "Available soon".
    ===================================================================== */
 var CHECKOUT = {
-  // Stripe Payment Link for the lifetime licence (https://buy.stripe.com/...).
-  // In Stripe, set "After payment" to redirect to this page with ?paid=1
-  stripeLifetimeUrl: "",
-  // PayPal subscription plan for the monthly licence (P-...)
+  // Stripe Payment Links (https://buy.stripe.com/...). In each one, set
+  // "After payment" to redirect to this page with ?paid=1
+  stripeLifetimeUrl: "https://buy.stripe.com/cNi8wI8kzfv9dXe4kH7ss00",     // one-time payment
+  stripeMonthlyUrl: "https://buy.stripe.com/14A28k58nciXaL26sP7ss01",      // recurring, monthly
+  // Stripe customer portal login link (https://billing.stripe.com/p/login/...)
+  stripePortalUrl: "https://billing.stripe.com/p/login/cNi8wI8kzfv9dXe4kH7ss00",
+  // Optional alternative for the monthly plan: PayPal plan id (P-...).
+  // Only used when stripeMonthlyUrl is empty.
   paypalPlanId: "",
   // Public PayPal client id (the same one used on the other product pages)
   paypalClientId: "AWa_6Af93UGQdocFcdOmDgC6xGjFV4Kp-8yeFyZ6DhHqPDnHt6kK5xQdSenwitI1-a0kk4Sc4DeCYK9N"
@@ -761,20 +768,27 @@ consent.addEventListener('change', function(){
   consentListeners.forEach(function(fn){ fn(consent.checked); });
 });
 
-/* Lifetime: Stripe Payment Link */
-(function(){
-  if (!CHECKOUT.stripeLifetimeUrl) return;
-  var slot = document.getElementById('pay-lifetime');
-  slot.innerHTML = '<a class="btn brass block" id="stripeBtn" href="' + CHECKOUT.stripeLifetimeUrl.replace(/"/g, '') + '" aria-disabled="true">Buy lifetime licence</a><p class="pay-note">Card, Apple Pay or Google Pay, processed by Stripe.</p>';
-  var btn = document.getElementById('stripeBtn');
+/* Stripe Payment Links (lifetime and monthly) */
+function stripeButton(slotId, btnId, url, label, cls){
+  var slot = document.getElementById(slotId);
+  slot.innerHTML = '<a class="btn ' + cls + ' block" id="' + btnId + '" href="' + url.replace(/"/g, '') + '" aria-disabled="true">' + label + '</a><p class="pay-note">Card, Apple Pay or Google Pay, processed by Stripe.</p>';
+  var btn = document.getElementById(btnId);
   consentListeners.push(function(ok){ btn.setAttribute('aria-disabled', ok ? 'false' : 'true'); });
   btn.addEventListener('click', function(e){ if (!consentOk()) e.preventDefault(); });
-})();
+}
+if (CHECKOUT.stripeLifetimeUrl) stripeButton('pay-lifetime', 'stripeBtn', CHECKOUT.stripeLifetimeUrl, 'Buy lifetime licence', 'brass');
+if (CHECKOUT.stripeMonthlyUrl) stripeButton('pay-monthly', 'stripeMonthlyBtn', CHECKOUT.stripeMonthlyUrl, 'Subscribe monthly', 'ink');
+
+/* Link to the Stripe customer portal in the cancellation answer */
+if (CHECKOUT.stripePortalUrl) {
+  var pt = document.getElementById('portalText');
+  pt.innerHTML = '<a href="' + CHECKOUT.stripePortalUrl.replace(/"/g, '') + '">subscription page</a> (also linked in your licence email)';
+}
 
 /* Monthly: PayPal subscription. disable-funding=card,credit stops PayPal
    injecting its floating menu over the sticky header. */
 (function(){
-  if (!CHECKOUT.paypalPlanId) return;
+  if (!CHECKOUT.paypalPlanId || CHECKOUT.stripeMonthlyUrl) return;
   var slot = document.getElementById('pay-monthly');
   slot.innerHTML = '<div id="paypal-button-container"></div><p class="pay-note">Your licence email goes to your PayPal email address.</p>';
   var s = document.createElement('script');
